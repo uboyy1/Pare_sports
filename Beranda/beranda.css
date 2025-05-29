@@ -1,0 +1,377 @@
+/* ================ BASE STYLES ================ */
+:root {
+  --primary-color: #dc3545;
+  --secondary-color: #ffc107;
+  --dark-color: #212529;
+  --light-color: #f8f9fa;
+  --gray-color: #6c757d;
+  --border-radius: 8px;
+  --box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  --transition: all 0.3s ease;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--light-color);
+  margin: 0;
+  padding: 0;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* ================ COMPONENT STYLES ================ */
+
+/* Navbar */
+.navbar {
+  background-color: #ffffff;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.navbar-brand {
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: var(--primary-color);
+}
+
+.navbar .btn {
+  font-weight: 500;
+  padding: 0.375rem 0.75rem;
+}
+
+/* Hero Section */
+.hero {
+  background: linear-gradient(rgba(210, 0, 0, 0.7), rgba(210, 0, 0, 0.7)), url('bg.cont.png') center/cover no-repeat;
+  min-height: 300px;
+  height: auto;
+  color: white;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background-attachment: fixed;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Buttons */
+.btn-yellow {
+  background-color: var(--secondary-color);
+  color: var(--dark-color);
+  font-weight: 600;
+  border: none;
+  padding: 0.5rem 1.5rem;
+  border-radius: var(--border-radius);
+  transition: var(--transition);
+}
+
+.btn-yellow:hover {
+  background-color: #e0a800;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-search {
+  background-color: var(--primary-color);
+  color: #ffffff;
+  height: 45px;
+  padding: 0.375rem 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: var(--border-radius);
+  transition: var(--transition);
+}
+
+.btn-search:hover {
+  background-color: #c82333;
+  color: #ffffff;
+}
+
+/* Forms */
+.form-select,
+.form-control {
+  height: 45px;
+  border-radius: var(--border-radius);
+  border: 1px solid #dacece;
+  font-size: 0.9rem;
+}
+
+/* Venue Cards */
+.card {
+  border: none;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  transition: var(--transition);
+  background-color: #fff;
+  box-shadow: var(--box-shadow);
+  margin-bottom: 1.5rem;
+  height: 100%;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card-img-top {
+  height: 180px;
+  object-fit: cover;
+}
+
+.card-body {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Star Rating */
+.star-rating {
+  display: inline-block;
+  position: relative;
+  font-size: 1rem;
+}
+
+.stars-back {
+  color: #ddd;
+}
+
+.stars-front {
+  color: var(--secondary-color);
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* Location */
+.d-flex.align-items-start.mb-2 {
+  margin-bottom: 0.5rem !important;
+}
+
+.small.fw-semibold {
+  font-size: 0.85rem;
+}
+
+.text-muted.small {
+  font-size: 0.8rem;
+  color: var(--gray-color) !important;
+}
+
+/* Price */
+.text-muted.small {
+  margin-top: auto;
+}
+
+/* Booking Button */
+.btn-danger {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  transition: var(--transition);
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+  border-color: #c82333;
+  transform: translateY(-2px);
+}
+
+/* Section Title */
+.fw-bold {
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.fw-bold span {
+  color: var(--primary-color);
+}
+
+/* Banner */
+.banner {
+  background-color: #fff;
+  padding: 0;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  text-align: center;
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+.banner img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--border-radius);
+}
+
+/* Pagination */
+.pagination {
+  margin-top: 2rem;
+  justify-content: center;
+}
+
+.page-item.active .page-link {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.page-link {
+  color: var(--primary-color);
+  border: 1px solid #dee2e6;
+  padding: 0.5rem 0.75rem;
+}
+
+.page-link:hover {
+  color: #a71d2a;
+  background-color: var(--light-color);
+}
+
+/* Footer */
+.footer {
+  background-color: var(--dark-color);
+  color: #ffffff;
+  padding: 3rem 0 1.5rem;
+  margin-top: 3rem;
+}
+
+.footer h6 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+.footer p {
+  margin: 0.2rem 0;
+  font-size: 0.9rem;
+  color: #adb5bd;
+}
+
+.footer a {
+  color: #adb5bd;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer a:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+/* ================ MODAL STYLES ================ */
+
+/* Login Modal */
+.login-modal .modal-dialog {
+  max-width: 450px;
+}
+
+.role-selector {
+  display: flex;
+  margin-bottom: 1.5rem;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.role-option {
+  flex: 1;
+  text-align: center;
+  padding: 0.75rem;
+  cursor: pointer;
+  transition: var(--transition);
+  background-color: var(--light-color);
+  border: 1px solid #dee2e6;
+}
+
+.role-option.active {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 1.5rem 0;
+  color: var(--gray-color);
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.divider::before {
+  margin-right: 1rem;
+}
+
+.divider::after {
+  margin-left: 1rem;
+}
+
+/* ================ UTILITY CLASSES ================ */
+.d-none {
+  display: none !important;
+}
+
+.logged-in .user-dropdown {
+  display: flex !important;
+}
+
+.logged-in .auth-buttons {
+  display: none !important;
+}
+
+/* ================ RESPONSIVE STYLES ================ */
+@media (max-width: 768px) {
+  .hero {
+    min-height: 250px;
+    padding: 1.5rem;
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .footer {
+    padding: 2rem 0 1rem;
+    text-align: center;
+  }
+
+  .footer .col-md-4 {
+    margin-bottom: 1.5rem;
+  }
+
+  .search-input {
+    margin-bottom: 0.5rem;
+  }
+  
+  .btn-search {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+@media (min-width: 768px) {
+  .search-container .row > div {
+    display: flex;
+    align-items: center;
+  }
+
+  .search-container button {
+    margin-left: 0.5rem;
+  }
+}
