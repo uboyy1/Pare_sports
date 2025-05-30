@@ -13,8 +13,6 @@
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: var(--light-color);
-  margin: 0;
-  padding: 0;
   color: #333;
   line-height: 1.6;
 }
@@ -31,19 +29,12 @@ body {
 .navbar-brand {
   font-weight: bold;
   font-size: 1.5rem;
-  color: var(--primary-color);
-}
-
-.navbar .btn {
-  font-weight: 500;
-  padding: 0.375rem 0.75rem;
 }
 
 /* Hero Section */
 .hero {
-  background: linear-gradient(rgba(210, 0, 0, 0.7), rgba(210, 0, 0, 0.7)), url('bg.cont.png') center/cover no-repeat;
+  background: linear-gradient(rgba(210, 0, 0, 0.7), rgba(210, 0, 0, 0.7)), url('../img/bg.cont.png') center/cover no-repeat;
   min-height: 300px;
-  height: auto;
   color: white;
   text-align: center;
   display: flex;
@@ -90,7 +81,6 @@ body {
 
 .btn-search:hover {
   background-color: #c82333;
-  color: #ffffff;
 }
 
 /* Forms */
@@ -103,7 +93,7 @@ body {
 }
 
 /* Venue Cards */
-.card {
+.venue-card {
   border: none;
   border-radius: var(--border-radius);
   overflow: hidden;
@@ -114,7 +104,7 @@ body {
   height: 100%;
 }
 
-.card:hover {
+.venue-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
@@ -156,11 +146,7 @@ body {
   white-space: nowrap;
 }
 
-/* Location */
-.d-flex.align-items-start.mb-2 {
-  margin-bottom: 0.5rem !important;
-}
-
+/* Location and Price */
 .small.fw-semibold {
   font-size: 0.85rem;
 }
@@ -168,11 +154,6 @@ body {
 .text-muted.small {
   font-size: 0.8rem;
   color: var(--gray-color) !important;
-}
-
-/* Price */
-.text-muted.small {
-  margin-top: auto;
 }
 
 /* Booking Button */
@@ -184,16 +165,10 @@ body {
 
 .btn-danger:hover {
   background-color: #c82333;
-  border-color: #c82333;
   transform: translateY(-2px);
 }
 
 /* Section Title */
-.fw-bold {
-  position: relative;
-  padding-bottom: 0.5rem;
-}
-
 .fw-bold span {
   color: var(--primary-color);
 }
@@ -204,22 +179,18 @@ body {
   padding: 0;
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
-  text-align: center;
-  margin-bottom: 2rem;
   overflow: hidden;
 }
 
 .banner img {
   width: 100%;
   height: auto;
-  display: block;
   border-radius: var(--border-radius);
 }
 
 /* Pagination */
 .pagination {
   margin-top: 2rem;
-  justify-content: center;
 }
 
 .page-item.active .page-link {
@@ -229,13 +200,10 @@ body {
 
 .page-link {
   color: var(--primary-color);
-  border: 1px solid #dee2e6;
-  padding: 0.5rem 0.75rem;
 }
 
 .page-link:hover {
   color: #a71d2a;
-  background-color: var(--light-color);
 }
 
 /* Footer */
@@ -247,32 +215,20 @@ body {
 }
 
 .footer h6 {
-  font-size: 1rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: #fff;
-}
-
-.footer p {
-  margin: 0.2rem 0;
-  font-size: 0.9rem;
-  color: #adb5bd;
 }
 
 .footer a {
   color: #adb5bd;
-  text-decoration: none;
   transition: color 0.3s ease;
 }
 
 .footer a:hover {
   color: #ffffff;
-  text-decoration: underline;
 }
 
 /* ================ MODAL STYLES ================ */
-
-/* Login Modal */
 .login-modal .modal-dialog {
   max-width: 450px;
 }
@@ -297,7 +253,6 @@ body {
 .role-option.active {
   background-color: var(--primary-color);
   color: white;
-  border-color: var(--primary-color);
 }
 
 .divider {
@@ -327,14 +282,6 @@ body {
   display: none !important;
 }
 
-.logged-in .user-dropdown {
-  display: flex !important;
-}
-
-.logged-in .auth-buttons {
-  display: none !important;
-}
-
 /* ================ RESPONSIVE STYLES ================ */
 @media (max-width: 768px) {
   .hero {
@@ -354,24 +301,8 @@ body {
   .footer .col-md-4 {
     margin-bottom: 1.5rem;
   }
-
-  .search-input {
-    margin-bottom: 0.5rem;
-  }
   
   .btn-search {
     width: 100%;
-    margin-left: 0;
-  }
-}
-
-@media (min-width: 768px) {
-  .search-container .row > div {
-    display: flex;
-    align-items: center;
-  }
-
-  .search-container button {
-    margin-left: 0.5rem;
   }
 }
