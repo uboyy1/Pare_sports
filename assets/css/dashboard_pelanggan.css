@@ -126,24 +126,14 @@ body {
   margin-bottom: 0.5rem;
 }
 
-/* Star Rating */
-.star-rating {
-  display: inline-block;
-  position: relative;
-  font-size: 1rem;
+/* Star rating styles */
+.text-warning {
+  color: #ffc107 !important;
 }
 
-.stars-back {
-  color: #ddd;
-}
-
-.stars-front {
-  color: var(--secondary-color);
-  position: absolute;
-  top: 0;
-  left: 0;
-  overflow: hidden;
-  white-space: nowrap;
+.fa-star,
+.fa-star-half-alt {
+  font-size: 0.9rem;
 }
 
 /* Location and Price */
@@ -304,5 +294,28 @@ body {
   
   .btn-search {
     width: 100%;
+  }
+  
+  .form-select,
+  .form-control {
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 576px) {
+  .navbar {
+    padding: 0.5rem 1rem;
+  }
+  
+  .hero h1 {
+    font-size: 1.8rem;
+  }
+  
+  .card-title {
+    font-size: 1rem;
+  }
+  
+  .venue-card .btn {
+    font-size: 0.8rem;
   }
 }
