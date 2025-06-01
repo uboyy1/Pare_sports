@@ -1,4 +1,23 @@
 <?php
+function getVenueById($conn, $id) {
+    $stmt = $conn->prepare("SELECT * FROM venues WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result->fetch_assoc();
+}
+
+function getFieldsByVenueId($conn, $venue_id) {
+    $stmt = $conn->prepare("SELECT * FROM fields WHERE venue_id = ?");
+    $stmt->bind_param("i", $venue_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $fields = [];
+    while ($row = $result->fetch_assoc()) {
+        $fields[] = $row;
+    }
+    return $fields;
+}
 function getLapangan($conn, $sport = 'all', $search = '', $limit = 6, $offset = 0) {
     $query = "SELECT * FROM lapangan";
     
@@ -81,5 +100,7 @@ function countLapangan($conn, $sport = 'all', $search = '') {
     $row = $result->fetch_assoc();
     
     return $row['total'];
+    
 }
 ?>
+
