@@ -31,16 +31,6 @@ document.getElementById('registerForm')?.addEventListener('submit', function(e) 
   }
 });
 
-// Sport filter buttons
-document.querySelectorAll('.btn-sport')?.forEach(button => {
-  button.addEventListener('click', function() {
-    const sport = this.dataset.sport;
-    document.getElementById('sportFilter').value = sport;
-    document.getElementById('pageInput').value = 1;
-    document.getElementById('filterForm').submit();
-  });
-});
-
 // Auto submit on sport select change
 document.getElementById('sportFilter')?.addEventListener('change', function() {
   document.getElementById('pageInput').value = 1;

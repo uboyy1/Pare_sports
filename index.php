@@ -72,18 +72,6 @@ $username = $is_logged_in ? $_SESSION['username'] : '';
       </div>
     </form>
 
-    <!-- Jenis Olahraga -->
-    <div class="sport-filter-buttons mt-4 mb-4">
-      <div class="d-flex flex-wrap gap-2">
-        <button class="btn btn-sport <?= $sport_filter == 'all' ? 'active' : '' ?>" data-sport="all">Semua</button>
-        <button class="btn btn-sport <?= $sport_filter == 'futsal' ? 'active' : '' ?>" data-sport="futsal">Futsal</button>
-        <button class="btn btn-sport <?= $sport_filter == 'badminton' ? 'active' : '' ?>" data-sport="badminton">Badminton</button>
-        <button class="btn btn-sport <?= $sport_filter == 'basket' ? 'active' : '' ?>" data-sport="basket">Basket</button>
-        <button class="btn btn-sport <?= $sport_filter == 'tenis' ? 'active' : '' ?>" data-sport="tenis">Tenis</button>
-        <button class="btn btn-sport <?= $sport_filter == 'minisoccer' ? 'active' : '' ?>" data-sport="minisoccer">Mini Soccer</button>
-      </div>
-    </div>
-
     <!-- Rekomendasi -->
     <h5 class="mt-5 mb-3 fw-bold">
       <?php if ($sport_filter != 'all'): ?>
@@ -198,7 +186,7 @@ $username = $is_logged_in ? $_SESSION['username'] : '';
   <div class="container banner my-5 text-center">
     <img src="assets/img/Gambar1.jpg" class="img-fluid" alt="Promo">
   </div>
-
+  
   <?php include 'includes/footer.php'; ?>
   <?php include 'includes/login_modal.php'; ?>
   <?php include 'includes/register_modal.php'; ?>
