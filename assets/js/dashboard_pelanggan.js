@@ -31,7 +31,7 @@ document.getElementById('registerForm')?.addEventListener('submit', function(e) 
   }
 });
 
-// Filter handling
+// Auto submit on sport select change
 document.getElementById('sportFilter')?.addEventListener('change', function() {
   document.getElementById('pageInput').value = 1;
   document.getElementById('filterForm').submit();
