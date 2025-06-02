@@ -1,4 +1,3 @@
-/* ================ BASE STYLES ================ */
 :root {
   --primary-color: #dc3545;
   --secondary-color: #ffc107;
@@ -16,8 +15,6 @@ body {
   color: #333;
   line-height: 1.6;
 }
-
-/* ================ COMPONENT STYLES ================ */
 
 /* Navbar */
 .navbar {

@@ -186,7 +186,7 @@ $username = $is_logged_in ? $_SESSION['username'] : '';
   <div class="container banner my-5 text-center">
     <img src="assets/img/Gambar1.jpg" class="img-fluid" alt="Promo">
   </div>
-
+  
   <?php include 'includes/footer.php'; ?>
   <?php include 'includes/login_modal.php'; ?>
   <?php include 'includes/register_modal.php'; ?>
