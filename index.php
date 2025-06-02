@@ -72,8 +72,26 @@ $username = $is_logged_in ? $_SESSION['username'] : '';
       </div>
     </form>
 
+    <!-- Jenis Olahraga -->
+    <div class="sport-filter-buttons mt-4 mb-4">
+      <div class="d-flex flex-wrap gap-2">
+        <button class="btn btn-sport <?= $sport_filter == 'all' ? 'active' : '' ?>" data-sport="all">Semua</button>
+        <button class="btn btn-sport <?= $sport_filter == 'futsal' ? 'active' : '' ?>" data-sport="futsal">Futsal</button>
+        <button class="btn btn-sport <?= $sport_filter == 'badminton' ? 'active' : '' ?>" data-sport="badminton">Badminton</button>
+        <button class="btn btn-sport <?= $sport_filter == 'basket' ? 'active' : '' ?>" data-sport="basket">Basket</button>
+        <button class="btn btn-sport <?= $sport_filter == 'tenis' ? 'active' : '' ?>" data-sport="tenis">Tenis</button>
+        <button class="btn btn-sport <?= $sport_filter == 'minisoccer' ? 'active' : '' ?>" data-sport="minisoccer">Mini Soccer</button>
+      </div>
+    </div>
+
     <!-- Rekomendasi -->
-    <h5 class="mt-5 mb-3 fw-bold">Rekomendasi <span class="text-danger">Lapangan</span></h5>
+    <h5 class="mt-5 mb-3 fw-bold">
+      <?php if ($sport_filter != 'all'): ?>
+        Lapangan <span class="text-danger"><?= ucfirst($sport_filter) ?></span>
+      <?php else: ?>
+        Rekomendasi <span class="text-danger">Lapangan</span>
+      <?php endif; ?>
+    </h5>
     
     <!-- Grid View -->
     <div class="row g-3" id="venueContainer">
@@ -88,6 +106,9 @@ $username = $is_logged_in ? $_SESSION['username'] : '';
           <div class="card h-100 shadow-sm venue-card">
             <div class="position-relative">
               <img src="assets/img/<?= htmlspecialchars($item['gambar']) ?>" class="card-img-top" alt="<?= htmlspecialchars($item['nama_venue']) ?>" style="height: 180px; object-fit: cover;">
+              <span class="badge bg-sport position-absolute top-0 start-0 m-2">
+                <?= strtoupper($item['jenis_olahraga']) ?>
+              </span>
             </div>
             <div class="card-body d-flex flex-column">
               <h6 class="card-title"><?= htmlspecialchars($item['nama_venue']) ?></h6>
