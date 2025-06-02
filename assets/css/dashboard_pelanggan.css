@@ -136,6 +136,15 @@ body {
   font-size: 0.9rem;
 }
 
+/* Sport Badge */
+.badge.bg-sport {
+  background-color: var(--primary-color);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+}
+
 /* Location and Price */
 .small.fw-semibold {
   font-size: 0.85rem;
@@ -318,44 +327,9 @@ body {
   .venue-card .btn {
     font-size: 0.8rem;
   }
-  /* Sport Filter Buttons */
-.sport-filter-buttons {
-  overflow-x: auto;
-  padding-bottom: 10px;
-  margin-bottom: 15px;
-}
-
-.sport-filter-buttons .d-flex {
-  flex-wrap: nowrap;
-}
-
-.btn-sport {
-  background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
-  color: #495057;
-  padding: 0.5rem 1rem;
-  border-radius: 50px;
-  white-space: nowrap;
-  transition: var(--transition);
-}
-
-.btn-sport:hover {
-  background-color: #e9ecef;
-  transform: translateY(-2px);
-}
-
-.btn-sport.active {
-  background-color: var(--primary-color);
-  color: white;
-  border-color: var(--primary-color);
-}
-
-/* Sport Badge */
-.badge.bg-sport {
-  background-color: var(--primary-color);
-  color: white;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.35rem 0.75rem;
-}
+  
+  .badge.bg-sport {
+    font-size: 0.65rem;
+    padding: 0.25rem 0.5rem;
+  }
 }
