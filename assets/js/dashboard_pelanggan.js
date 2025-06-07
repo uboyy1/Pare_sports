@@ -51,10 +51,17 @@ document.querySelectorAll('.page-link')?.forEach(link => {
     if (this.parentElement.classList.contains('disabled')) {
       e.preventDefault();
     }
+    
   });
+  
 });
 
-// Reset filter via link
+document.addEventListener('DOMContentLoaded', function() {
+    setupPasswordToggle('loginPassword', 'toggleLoginPassword');
+    setupPasswordToggle('registerPassword', 'toggleRegisterPassword');
+    setupPasswordToggle('registerConfirmPassword', 'toggleConfirmPassword');
+});
+
 document.querySelector('a.btn-outline-secondary')?.addEventListener('click', function(e) {
   e.preventDefault();
   window.location.href = 'index.php';

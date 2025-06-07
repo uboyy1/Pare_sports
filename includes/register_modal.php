@@ -27,11 +27,18 @@
           </div>
           <div class="mb-3">
             <label for="registerConfirmPassword" class="form-label">Konfirmasi Password</label>
-            <input type="password" class="form-control" id="registerConfirmPassword" name="confirm_password" placeholder="Ulangi password" required>
+            <div class="input-group">
+              <input type="password" class="form-control" id="registerConfirmPassword" name="confirm_password" placeholder="Ulangi password" required>
+              <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
           </div>
           <div class="mb-3 form-check">
             <input type="checkbox" class="form-check-input" id="registerAgree" name="agree" required>
-            <label class="form-check-label" for="registerAgree">Saya menyetujui <a href="#">Syarat dan Ketentuan</a></label>
+            <label class="form-check-label" for="registerAgree">
+              Saya menyetujui <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Syarat dan Ketentuan</a>
+            </label>
           </div>
           <button type="submit" class="btn btn-primary w-100">
             <i class="fas fa-user-plus me-2"></i>DAFTAR SEKARANG

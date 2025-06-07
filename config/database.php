@@ -1,6 +1,6 @@
 <?php
 $host = 'localhost';
-$dbname = 'Pare_sports';  // Diubah ke nama database baru
+$dbname = 'Pare_sports';  
 $username = 'root';
 $password = '';
 

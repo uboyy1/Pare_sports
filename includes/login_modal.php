@@ -59,9 +59,6 @@
           <button class="btn btn-outline-danger w-100 mb-2">
             <i class="fab fa-google me-2"></i>Masuk dengan Google
           </button>
-          <button class="btn btn-outline-primary w-100">
-            <i class="fab fa-facebook-f me-2"></i>Masuk dengan Facebook
-          </button>
         </div>
       </div>
     </div>

@@ -48,6 +48,10 @@ $username = $is_logged_in ? $_SESSION['username'] : '';
     <?php endif; ?>
   </section>
 
+  <?php include 'includes/terms_modal.php'; ?>
+  <?php include 'includes/login_modal.php'; ?>
+  <?php include 'includes/register_modal.php'; ?>
+
   <!-- Filter/Search -->
   <div class="container my-4">
     <form method="GET" action="index.php" id="filterForm">
@@ -94,9 +98,7 @@ $username = $is_logged_in ? $_SESSION['username'] : '';
           <div class="card h-100 shadow-sm venue-card">
             <div class="position-relative">
               <img src="assets/img/<?= htmlspecialchars($item['gambar']) ?>" class="card-img-top" alt="<?= htmlspecialchars($item['nama_venue']) ?>" style="height: 180px; object-fit: cover;">
-              <span class="badge bg-sport position-absolute top-0 start-0 m-2">
-                <?= strtoupper($item['jenis_olahraga']) ?>
-              </span>
+
             </div>
             <div class="card-body d-flex flex-column">
               <h6 class="card-title"><?= htmlspecialchars($item['nama_venue']) ?></h6>
