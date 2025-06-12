@@ -17,22 +17,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
     
     // Cek apakah email sudah terdaftar
-    $query = "SELECT * FROM users WHERE email = ?";
+    $query = "SELECT * FROM users WHERE email = :email";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param('s', $email);
+    $stmt->bindParam(':email', $email);
     $stmt->execute();
-    $result = $stmt->get_result();
     
-    if ($result->num_rows > 0) {
+    if ($stmt->rowCount() > 0) {
         $_SESSION['register_error'] = "Email sudah terdaftar!";
         header('Location: ../index.php');
         exit();
     }
     
     // Insert user baru
-    $query = "INSERT INTO users (nama, email, password, role) VALUES (?, ?, ?, 'user')";
+    $query = "INSERT INTO users (nama, email, password, role) VALUES (:nama, :email, :password, 'user')";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param('sss', $nama, $email, $hashed_password);
+    $stmt->bindParam(':nama', $nama);
+    $stmt->bindParam(':email', $email);
+    $stmt->bindParam(':password', $hashed_password);
     
     if ($stmt->execute()) {
         $_SESSION['register_success'] = "Pendaftaran berhasil! Silakan login.";
@@ -47,4 +48,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     header('Location: ../index.php');
     exit();
 }
-?>

@@ -7,18 +7,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $password = $_POST['password'];
     $role = $_POST['role'];
 
-    $query = "SELECT * FROM users WHERE email = ? AND role = ?";
+    // Gunakan prepared statement dengan PDO
+    $query = "SELECT * FROM users WHERE email = :email AND role = :role";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param('ss', $email, $role);
+    $stmt->bindParam(':email', $email);
+    $stmt->bindParam(':role', $role);
     $stmt->execute();
-    $result = $stmt->get_result();
     
-    if ($result->num_rows > 0) {
-        $user = $result->fetch_assoc();
+    if ($stmt->rowCount() > 0) {
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if (password_verify($password, $user['password'])) {
             $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['nama'];
+            $_SESSION['username'] = $user['nama']; // Perhatikan: di database kolomnya 'nama'
             $_SESSION['email'] = $user['email'];
             $_SESSION['role'] = $user['role'];
             

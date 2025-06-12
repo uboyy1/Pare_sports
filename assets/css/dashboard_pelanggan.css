@@ -1,5 +1,5 @@
 :root {
-  --primary-color: #dc3545;
+  --primary-color: #d20000;
   --secondary-color: #ffc107;
   --dark-color: #212529;
   --light-color: #f8f9fa;
@@ -77,7 +77,7 @@ body {
 }
 
 .btn-search:hover {
-  background-color: #c82333;
+  background-color: #9a0000;
 }
 
 /* Forms */
@@ -160,7 +160,7 @@ body {
 }
 
 .btn-danger:hover {
-  background-color: #c82333;
+  background-color: #9a0000;
   transform: translateY(-2px);
 }
 
@@ -199,7 +199,7 @@ body {
 }
 
 .page-link:hover {
-  color: #a71d2a;
+  color: #9a0000;
 }
 
 /* Footer */
