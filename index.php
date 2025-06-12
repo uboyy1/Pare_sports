@@ -25,6 +25,21 @@ $lapangan = getLapangan($conn, $sport_filter, $search_query, $per_page, $offset)
 $is_logged_in = isset($_SESSION['user_id']);
 $user_role = $is_logged_in ? $_SESSION['role'] : '';
 $username = $is_logged_in ? $_SESSION['username'] : '';
+
+$is_logged_in = isset($_SESSION['user_id']);
+$user_role = $is_logged_in ? $_SESSION['role'] : '';
+$username = $is_logged_in ? $_SESSION['username'] : '';
+
+// Tambahkan profile_picture ke session jika belum ada
+if ($is_logged_in && !isset($_SESSION['profile_picture'])) {
+    $query = "SELECT profile_picture FROM users WHERE id = :id";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(':id', $_SESSION['user_id'], PDO::PARAM_INT);
+    $stmt->execute();
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    $_SESSION['profile_picture'] = $user['profile_picture'];
+}
 ?>
 
 <!DOCTYPE html>

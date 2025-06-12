@@ -1,18 +1,16 @@
 <?php
 $host = 'localhost';
-$dbname = 'Pare_sports';  
+$dbname = 'pare_sports';
 $username = 'root';
 $password = '';
 
 try {
-    $conn = new mysqli($host, $username, $password, $dbname);
+    $conn = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-    
-    $conn->set_charset("utf8mb4");
-} catch (Exception $e) {
+    // Define upload paths
+    define('PROFILE_PICTURE_DIR', 'assets/img/profiles/');
+    define('LAPANGAN_IMAGE_DIR', 'assets/img/');
+} catch (PDOException $e) {
     die("Database connection failed: " . $e->getMessage());
 }
-?>

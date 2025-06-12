@@ -18,88 +18,61 @@ function getFieldsByVenueId($conn, $venue_id) {
     }
     return $fields;
 }
-function getLapangan($conn, $sport = 'all', $search = '', $limit = 6, $offset = 0) {
-    $query = "SELECT * FROM lapangan";
-    
-    $conditions = [];
+function getLapangan($conn, $sport_filter, $search_query, $per_page, $offset) {
+    $sql = "SELECT * FROM lapangan WHERE 1=1";
     $params = [];
-    $types = '';
     
-    if ($sport != 'all') {
-        $conditions[] = "jenis_olahraga = ?";
-        $params[] = $sport;
-        $types .= 's';
+    if ($sport_filter != 'all') {
+        $sql .= " AND jenis_olahraga = ?";
+        $params[] = $sport_filter;
     }
     
-    if (!empty($search)) {
-        $conditions[] = "nama_venue LIKE ?";
-        $params[] = "%$search%";
-        $types .= 's';
+    if (!empty($search_query)) {
+        $sql .= " AND nama_venue LIKE ?";
+        $params[] = '%' . $search_query . '%';
     }
     
-    if (!empty($conditions)) {
-        $query .= " WHERE " . implode(" AND ", $conditions);
-    }
-    
-    $query .= " ORDER BY rating DESC LIMIT ? OFFSET ?";
-    $params[] = $limit;
+    $sql .= " LIMIT ? OFFSET ?";
+    $params[] = $per_page;
     $params[] = $offset;
-    $types .= 'ii';
     
-    $stmt = $conn->prepare($query);
+    $stmt = $conn->prepare($sql);
     
-    if ($stmt === false) {
-        die("Error in query: " . $conn->error);
-    }
-    
-    if (!empty($params)) {
-        $stmt->bind_param($types, ...$params);
+    // Bind parameter secara manual
+    foreach ($params as $key => $value) {
+        $param_type = is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR;
+        $stmt->bindValue($key + 1, $value, $param_type);
     }
     
     $stmt->execute();
-    $result = $stmt->get_result();
-    
-    return $result->fetch_all(MYSQLI_ASSOC);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function countLapangan($conn, $sport = 'all', $search = '') {
-    $query = "SELECT COUNT(*) as total FROM lapangan";
-    
-    $conditions = [];
+function countLapangan($conn, $sport_filter, $search_query) {
+    $sql = "SELECT COUNT(*) as total FROM lapangan WHERE 1=1";
     $params = [];
-    $types = '';
     
-    if ($sport != 'all') {
-        $conditions[] = "jenis_olahraga = ?";
-        $params[] = $sport;
-        $types .= 's';
+    if ($sport_filter != 'all') {
+        $sql .= " AND jenis_olahraga = ?";
+        $params[] = $sport_filter;
     }
     
-    if (!empty($search)) {
-        $conditions[] = "nama_venue LIKE ?";
-        $params[] = "%$search%";
-        $types .= 's';
+    if (!empty($search_query)) {
+        $sql .= " AND nama_venue LIKE ?";
+        $params[] = '%' . $search_query . '%';
     }
     
-    if (!empty($conditions)) {
-        $query .= " WHERE " . implode(" AND ", $conditions);
-    }
+    $stmt = $conn->prepare($sql);
     
-    $stmt = $conn->prepare($query);
-    
-    if ($stmt === false) {
-        die("Error in query: " . $conn->error);
-    }
-    
-    if (!empty($params)) {
-        $stmt->bind_param($types, ...$params);
+    // Bind parameter secara manual
+    foreach ($params as $key => $value) {
+        $stmt->bindValue($key + 1, $value);
     }
     
     $stmt->execute();
-    $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
     
-    return $row['total'];
+    return $result['total'];
     
 }
 ?>
