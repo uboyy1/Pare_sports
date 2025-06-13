@@ -8,17 +8,17 @@
       <div class="modal-body">
         <div class="role-selector mb-3">
           <div class="btn-group w-100" role="group">
-            <input type="radio" class="btn-check" name="role" id="roleUser" autocomplete="off" checked>
+            <input type="radio" class="btn-check" name="role" id="roleUser" autocomplete="off" value="user" checked>
             <label class="btn btn-outline-secondary" for="roleUser">
               <i class="fas fa-user me-1"></i> Pengguna
             </label>
 
-            <input type="radio" class="btn-check" name="role" id="roleManager" autocomplete="off">
+            <input type="radio" class="btn-check" name="role" id="roleManager" autocomplete="off" value="pengelola">
             <label class="btn btn-outline-secondary" for="roleManager">
               <i class="fas fa-user-tie me-1"></i> Pengelola
             </label>
 
-            <input type="radio" class="btn-check" name="role" id="roleAdmin" autocomplete="off">
+            <input type="radio" class="btn-check" name="role" id="roleAdmin" autocomplete="off" value="admin">
             <label class="btn btn-outline-secondary" for="roleAdmin">
               <i class="fas fa-user-shield me-1"></i> Admin
             </label>

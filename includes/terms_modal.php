@@ -2,11 +2,11 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header bg-primary text-white">
-        <h5> </i>Syarat dan Ketentuan </h5>
+        <h5><i class="fas fa-file-contract me-2"></i>Syarat dan Ketentuan</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <h4 class="mb-3"]>Ketentuan Penggunaan</h4>
+        <h4 class="mb-3">Ketentuan Penggunaan</h4>
         <p>Dengan menggunakan layanan PareSports, Anda menyetujui ketentuan berikut:</p>
         
         <h5>1. Akun Pengguna</h5>
@@ -37,16 +37,9 @@
           - Pembatalan lebih dari 12 jam sebelum waktu penggunaan: biaya administrasi 10%<br>
           - Pembatalan kurang dari 12 jam sebelum waktu penggunaan: tidak dapat refund
         </p>
-        
-        <div class="form-check mt-4">
-          <input class="form-check-input" type="checkbox" id="agreeTerms">
-          <label class="form-check-label" for="agreeTerms">
-          </label>
-        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-    
       </div>
     </div>
   </div>
