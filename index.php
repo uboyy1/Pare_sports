@@ -26,10 +26,6 @@ $is_logged_in = isset($_SESSION['user_id']);
 $user_role = $is_logged_in ? $_SESSION['role'] : '';
 $username = $is_logged_in ? $_SESSION['username'] : '';
 
-$is_logged_in = isset($_SESSION['user_id']);
-$user_role = $is_logged_in ? $_SESSION['role'] : '';
-$username = $is_logged_in ? $_SESSION['username'] : '';
-
 // Tambahkan profile_picture ke session jika belum ada
 if ($is_logged_in && !isset($_SESSION['profile_picture'])) {
     $query = "SELECT profile_picture FROM users WHERE id = :id";
@@ -205,8 +201,6 @@ if ($is_logged_in && !isset($_SESSION['profile_picture'])) {
   </div>
   
   <?php include 'includes/footer.php'; ?>
-  <?php include 'includes/login_modal.php'; ?>
-  <?php include 'includes/register_modal.php'; ?>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="assets/js/script.js"></script>
