@@ -40,7 +40,7 @@ $isManager = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'p
 
   <?php include 'includes/header.php'; ?>
 
-  <!-- ===== BAGIAN YANG DIPERBAIKI ===== -->
+
   <div class="hero" style="background-image: url('assets/img/bg.cont.png">
     <nav>
       <a href="index.php">Home -</a>
@@ -60,7 +60,7 @@ $isManager = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'p
       <div class="venue-bottom d-flex flex-wrap">
         <div class="venue-info">
           <h1><?= htmlspecialchars($lapangan['nama_venue']) ?></h1>
-          <!-- Tampilkan data rating dari DB -->
+
           <div class="rating">
             <?php
               $rating = $lapangan['rating'];
@@ -127,7 +127,6 @@ $isManager = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'p
               <div class="time-slots-container">
                 <h5>Pilih Waktu Mulai</h5>
                 <div class="time-slots">
-                  <!-- Jadwal akan dimuat di sini oleh JavaScript -->
                 </div>
               </div>
               <div class="duration-selector mt-3">
