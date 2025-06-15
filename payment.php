@@ -48,99 +48,74 @@ $stmt->execute([$user_id]);
 $balance = $stmt->fetchColumn();
 $balance = $balance ? (float)$balance : 0.00;
 
-// Jika form pembayaran dikirim (memilih metode)
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['topup_amount'])) {
-        // Proses top up saldo
-        $topup_amount = (float)$_POST['topup_amount'];
-        if ($topup_amount > 0) {
-            $new_balance = $balance + $topup_amount;
+// Proses pembayaran booking
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment_method'])) {
+    $payment_method = $_POST['payment_method'];
+    
+    // Proses pembayaran berdasarkan metode
+    if ($payment_method === 'saldo') {
+        // Cek saldo cukup
+        if ($balance < $total_price) {
+            $error = "Saldo tidak cukup. Silakan top up atau pilih metode lain.";
+        } else {
+            // Kurangi saldo
+            $new_balance = $balance - $total_price;
             $conn->beginTransaction();
             try {
                 // Update saldo
                 $stmt = $conn->prepare("UPDATE user_balances SET balance = ? WHERE user_id = ?");
                 $stmt->execute([$new_balance, $user_id]);
                 
-                // Insert transaksi top up
-                $stmt = $conn->prepare("INSERT INTO transactions (user_id, amount, type, description) VALUES (?, ?, 'topup', 'Top up saldo')");
-                $stmt->execute([$user_id, $topup_amount]);
+                // Insert transaksi (pengurangan)
+                $stmt = $conn->prepare("INSERT INTO transactions (user_id, amount, type, description) VALUES (?, ?, 'payment', 'Pembayaran booking lapangan')");
+                $stmt->execute([$user_id, -$total_price]);
                 
+                // Buat booking
+                $stmt = $conn->prepare("INSERT INTO booking (user_id, lapangan_id, tanggal, jam_mulai, jam_selesai, durasi, total_harga, status, payment_method) VALUES (?, ?, ?, ?, ?, ?, ?, 'confirmed', ?)");
+                $stmt->execute([$user_id, $field_id, $date, $start_time, $end_time, $duration, $total_price, 'saldo']);
+                $booking_id = $conn->lastInsertId();
+                
+                // Commit
                 $conn->commit();
-                $balance = $new_balance;
-                $success_message = "Saldo berhasil ditambahkan: Rp " . number_format($topup_amount, 0, ',', '.');
+                
+                // Redirect ke halaman sukses
+                header('Location: booking_success.php?id=' . $booking_id);
+                exit();
             } catch (Exception $e) {
                 $conn->rollBack();
                 $error = "Terjadi kesalahan: " . $e->getMessage();
             }
         }
-    } elseif (isset($_POST['payment_method'])) {
-        $payment_method = $_POST['payment_method'];
-        
-        // Proses pembayaran berdasarkan metode
-        if ($payment_method === 'saldo') {
-            // Cek saldo cukup
-            if ($balance < $total_price) {
-                $error = "Saldo tidak cukup. Silakan top up atau pilih metode lain.";
-            } else {
-                // Kurangi saldo
-                $new_balance = $balance - $total_price;
-                $conn->beginTransaction();
-                try {
-                    // Update saldo
-                    $stmt = $conn->prepare("UPDATE user_balances SET balance = ? WHERE user_id = ?");
-                    $stmt->execute([$new_balance, $user_id]);
-                    
-                    // Insert transaksi (pengurangan)
-                    $stmt = $conn->prepare("INSERT INTO transactions (user_id, amount, type, description) VALUES (?, ?, 'payment', 'Pembayaran booking lapangan')");
-                    $stmt->execute([$user_id, -$total_price]);
-                    
-                    // Buat booking
-                    $stmt = $conn->prepare("INSERT INTO booking (user_id, lapangan_id, tanggal, jam_mulai, jam_selesai, durasi, total_harga, status, payment_method) VALUES (?, ?, ?, ?, ?, ?, ?, 'confirmed', ?)");
-                    $stmt->execute([$user_id, $field_id, $date, $start_time, $end_time, $duration, $total_price, 'saldo']);
-                    $booking_id = $conn->lastInsertId();
-                    
-                    // Commit
-                    $conn->commit();
-                    
-                    // Redirect ke halaman sukses
-                    header('Location: booking_success.php?id=' . $booking_id);
-                    exit();
-                } catch (Exception $e) {
-                    $conn->rollBack();
-                    $error = "Terjadi kesalahan: " . $e->getMessage();
-                }
+    } elseif ($payment_method === 'qris') {
+        // Simpan booking dengan status confirmed dan metode qris
+        $stmt = $conn->prepare("INSERT INTO booking (user_id, lapangan_id, tanggal, jam_mulai, jam_selesai, durasi, total_harga, status, payment_method) VALUES (?, ?, ?, ?, ?, ?, ?, 'confirmed', ?)");
+        $stmt->execute([$user_id, $field_id, $date, $start_time, $end_time, $duration, $total_price, 'qris']);
+        $booking_id = $conn->lastInsertId();
+        header('Location: booking_success.php?id=' . $booking_id);
+        exit();
+    } elseif ($payment_method === 'transfer') {
+        // Handle upload bukti transfer
+        if (isset($_FILES['payment_proof']) && $_FILES['payment_proof']['error'] === UPLOAD_ERR_OK) {
+            $target_dir = "assets/img/payment_proofs/";
+            if (!is_dir($target_dir)) {
+                mkdir($target_dir, 0777, true);
             }
-        } elseif ($payment_method === 'qris') {
-            // Simpan booking dengan status confirmed dan metode qris
-            $stmt = $conn->prepare("INSERT INTO booking (user_id, lapangan_id, tanggal, jam_mulai, jam_selesai, durasi, total_harga, status, payment_method) VALUES (?, ?, ?, ?, ?, ?, ?, 'confirmed', ?)");
-            $stmt->execute([$user_id, $field_id, $date, $start_time, $end_time, $duration, $total_price, 'qris']);
-            $booking_id = $conn->lastInsertId();
-            header('Location: booking_success.php?id=' . $booking_id);
-            exit();
-        } elseif ($payment_method === 'transfer') {
-            // Handle upload bukti transfer
-            if (isset($_FILES['payment_proof']) && $_FILES['payment_proof']['error'] === UPLOAD_ERR_OK) {
-                $target_dir = "assets/img/payment_proofs/";
-                if (!is_dir($target_dir)) {
-                    mkdir($target_dir, 0777, true);
-                }
-                $file_extension = pathinfo($_FILES['payment_proof']['name'], PATHINFO_EXTENSION);
-                $file_name = 'proof_' . time() . '_' . uniqid() . '.' . $file_extension;
-                $target_file = $target_dir . $file_name;
-                
-                if (move_uploaded_file($_FILES['payment_proof']['tmp_name'], $target_file)) {
-                    // Simpan booking dengan status pending dan metode transfer, simpan bukti
-                    $stmt = $conn->prepare("INSERT INTO booking (user_id, lapangan_id, tanggal, jam_mulai, jam_selesai, durasi, total_harga, status, payment_method, payment_proof) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?)");
-                    $stmt->execute([$user_id, $field_id, $date, $start_time, $end_time, $duration, $total_price, 'transfer', $file_name]);
-                    $booking_id = $conn->lastInsertId();
-                    header('Location: booking_pending.php?id=' . $booking_id);
-                    exit();
-                } else {
-                    $error = "Gagal mengunggah bukti pembayaran.";
-                }
+            $file_extension = pathinfo($_FILES['payment_proof']['name'], PATHINFO_EXTENSION);
+            $file_name = 'proof_' . time() . '_' . uniqid() . '.' . $file_extension;
+            $target_file = $target_dir . $file_name;
+            
+            if (move_uploaded_file($_FILES['payment_proof']['tmp_name'], $target_file)) {
+                // Simpan booking dengan status pending dan metode transfer, simpan bukti
+                $stmt = $conn->prepare("INSERT INTO booking (user_id, lapangan_id, tanggal, jam_mulai, jam_selesai, durasi, total_harga, status, payment_method, payment_proof) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?)");
+                $stmt->execute([$user_id, $field_id, $date, $start_time, $end_time, $duration, $total_price, 'transfer', $file_name]);
+                $booking_id = $conn->lastInsertId();
+                header('Location: booking_pending.php?id=' . $booking_id);
+                exit();
             } else {
-                $error = "Silakan unggah bukti transfer.";
+                $error = "Gagal mengunggah bukti pembayaran.";
             }
+        } else {
+            $error = "Silakan unggah bukti transfer.";
         }
     }
 }
@@ -415,11 +390,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       transform: translateY(-1px);
     }
     
-    .topup-section {
-      background-color: #f8f9fa;
-      border-radius: 8px;
-      padding: 20px;
-      margin-top: 20px;
+    /* Style untuk modal top up */
+    .topup-modal .modal-content {
+      border-radius: 12px;
     }
     
     .topup-options {
@@ -449,6 +422,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       border-width: 2px;
     }
     
+    .btn-topup {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 0;
+      font-weight: 600;
+      transition: all 0.3s;
+      width: 100%;
+      margin-top: 15px;
+    }
+    
+    .btn-topup:hover {
+      background-color: #218838;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
+    }
+    
     @media (max-width: 768px) {
       .container-main {
         padding: 0 15px;
@@ -457,7 +448,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       .card-body {
         padding: 20px 15px;
       }
-    }
+    }s
   </style>
 </head>
 <body>
@@ -481,10 +472,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <div class="container container-main">
     <?php if (isset($error)): ?>
       <div class="alert alert-danger"><?= $error ?></div>
-    <?php endif; ?>
-    
-    <?php if (isset($success_message)): ?>
-      <div class="alert alert-success"><?= $success_message ?></div>
     <?php endif; ?>
     
     <div class="row">
@@ -583,7 +570,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <div class="payment-info">
                   <div class="payment-title">Saldo Paresports</div>
-                  <div class="payment-desc">Saldo tersedia: Rp <?= number_format($balance, 0, ',', '.') ?></div>
+                  <div class="payment-desc" id="balance-display">Saldo tersedia: Rp <?= number_format($balance, 0, ',', '.') ?></div>
                   <?php if ($balance < $total_price): ?>
                     <div class="text-danger small mt-1">Saldo tidak cukup</div>
                   <?php endif; ?>
@@ -627,43 +614,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <button type="submit" class="btn-pay">
                 Bayar Rp <?= number_format($total_price, 0, ',', '.') ?>
               </button>
+              
+              <!-- Tombol Top Up -->
+              <button type="button" class="btn-topup" data-bs-toggle="modal" data-bs-target="#topupModal">
+                <i class="fas fa-plus-circle me-1"></i> Top Up Saldo
+              </button>
             </form>
-            
-            <!-- Top Up Saldo -->
-            <div class="topup-section">
-              <h5 class="section-title">Top Up Saldo Paresports</h5>
-              <form method="post">
-                <div class="topup-options">
-                  <div class="topup-option" data-amount="50000">Rp 50.000</div>
-                  <div class="topup-option" data-amount="100000">Rp 100.000</div>
-                  <div class="topup-option" data-amount="200000">Rp 200.000</div>
-                  <div class="topup-option" data-amount="500000">Rp 500.000</div>
-                </div>
-                
-                <div class="mb-3">
-                  <label for="topup_amount" class="form-label">Nominal Top Up</label>
-                  <input type="number" class="form-control" id="topup_amount" name="topup_amount" min="10000" step="10000" placeholder="Minimal Rp 10.000" required>
-                </div>
-                
-                <button type="submit" class="btn btn-success w-100">
-                  <i class="fas fa-plus-circle me-1"></i> Top Up Sekarang
-                </button>
-              </form>
-            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Modal Top Up -->
+  <div class="modal fade topup-modal" id="topupModal" tabindex="-1" aria-labelledby="topupModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="topupModalLabel">Top Up Saldo Paresports</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="topupForm">
+            <div class="topup-options">
+              <div class="topup-option" data-amount="50000">Rp 50.000</div>
+              <div class="topup-option" data-amount="100000">Rp 100.000</div>
+              <div class="topup-option" data-amount="200000">Rp 200.000</div>
+              <div class="topup-option" data-amount="500000">Rp 500.000</div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="topup_amount" class="form-label">Nominal Top Up</label>
+              <input type="number" class="form-control" id="topup_amount" name="topup_amount" min="10000" max="5000000" step="10000" placeholder="Minimal Rp 10.000, maksimal Rp 5.000.000" required>
+            </div>
+            
+            <button type="submit" class="btn btn-success w-100" id="topupSubmitBtn">
+              <i class="fas fa-plus-circle me-1"></i> Top Up Sekarang
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       // Fungsi untuk memilih metode pembayaran
       const paymentMethods = document.querySelectorAll('.payment-method');
       const transferDetails = document.getElementById('transferDetails');
-      const topupOptions = document.querySelectorAll('.topup-option');
-      const topupInput = document.getElementById('topup_amount');
       
       paymentMethods.forEach(method => {
         method.addEventListener('click', function() {
@@ -689,6 +689,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         });
       });
       
+      // Top Up Saldo
+      const topupModal = new bootstrap.Modal(document.getElementById('topupModal'));
+      const topupForm = document.getElementById('topupForm');
+      const topupOptions = document.querySelectorAll('.topup-option');
+      const topupInput = document.getElementById('topup_amount');
+      const topupSubmitBtn = document.getElementById('topupSubmitBtn');
+      
       // Pilih opsi top up
       topupOptions.forEach(option => {
         option.addEventListener('click', function() {
@@ -703,6 +710,104 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         });
       });
       
+      // Submit form top up
+      topupForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const amount = parseFloat(topupInput.value);
+        
+        // Validasi minimal top up
+        if (isNaN(amount) || amount < 10000) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Nominal tidak valid',
+            text: 'Minimal top up Rp 10.000'
+          });
+          return;
+        }
+        
+        // Validasi maksimal top up
+        if (amount > 5000000) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Nominal terlalu besar',
+            text: 'Maksimal top up Rp 5.000.000'
+          });
+          return;
+        }
+        
+        // Tampilkan indikator loading
+        const originalBtnText = topupSubmitBtn.innerHTML;
+        topupSubmitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Memproses...';
+        topupSubmitBtn.disabled = true;
+        
+        try {
+          const formData = new FormData();
+          formData.append('amount', amount);
+          
+          const response = await fetch('proses/topup.php', {
+            method: 'POST',
+            body: formData
+          });
+          
+          const data = await response.json();
+          
+          if (data.success) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Top Up Berhasil!',
+              text: data.message,
+              timer: 3000,
+              timerProgressBar: true,
+              showConfirmButton: false
+            });
+            
+            // Perbarui tampilan saldo di semua tempat
+            document.querySelectorAll('.payment-method[data-method="saldo"] .payment-desc').forEach(el => {
+              el.textContent = `Saldo tersedia: Rp ${parseFloat(data.new_balance).toLocaleString('id-ID')}`;
+            });
+            
+            // Perbarui tampilan saldo di metode pembayaran
+            const saldoMethod = document.querySelector('.payment-method[data-method="saldo"]');
+            const saldoRadio = saldoMethod.querySelector('input[type="radio"]');
+            const insufficientText = saldoMethod.querySelector('.text-danger');
+            
+            // Hapus peringatan saldo tidak cukup jika ada
+            if (insufficientText) {
+              insufficientText.remove();
+            }
+            
+            // Aktifkan metode saldo jika cukup
+            if (data.new_balance >= <?= $total_price ?>) {
+              saldoMethod.classList.add('selected');
+              saldoRadio.checked = true;
+            }
+            
+            // Tutup modal setelah 3 detik
+            setTimeout(() => {
+              topupModal.hide();
+            }, 3000);
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Top Up Gagal',
+              text: data.message || 'Terjadi kesalahan yang tidak diketahui'
+            });
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan Jaringan',
+            text: 'Tidak dapat terhubung ke server. Silakan coba lagi nanti.'
+          });
+        } finally {
+          // Reset tombol
+          topupSubmitBtn.innerHTML = originalBtnText;
+          topupSubmitBtn.disabled = false;
+        }
+      });
+      
       // Validasi form sebelum submit: jika transfer, wajib upload bukti
       document.getElementById('paymentForm').addEventListener('submit', function(e) {
         const selectedMethod = document.querySelector('.payment-method.selected')?.getAttribute('data-method');
@@ -710,7 +815,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           const fileInput = document.getElementById('payment_proof');
           if (!fileInput.files.length) {
             e.preventDefault();
-            alert('Silakan unggah bukti transfer.');
+            Swal.fire({
+              icon: 'error',
+              title: 'Bukti Transfer',
+              text: 'Silakan unggah bukti transfer.'
+            });
           }
         }
       });
