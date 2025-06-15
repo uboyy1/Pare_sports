@@ -187,7 +187,7 @@ $username = $_SESSION['username'];
         
         <div class="text-center mt-4">
             <a href="index.php" class="back-link">
-                <i class="fas fa-arrow-left me-2"></i> Kembali ke Dashboard
+                <i class="fas fa-arrow-left me-2"></i> Kembali ke Home
             </a>
         </div>
     </div>

@@ -1,0 +1,75 @@
+/* Filter buttons */
+.filter-container {
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 15px;
+}
+
+.filter-btn {
+    background-color: white;
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+    margin-right: 10px;
+    border-radius: 20px;
+    padding: 5px 15px;
+    transition: all 0.3s;
+}
+
+.filter-btn.active,
+.filter-btn:hover {
+    background-color: #dc3545;
+    color: white;
+    border-color: #dc3545;
+}
+
+/* Booking cards */
+.booking-card {
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+.booking-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Status badges */
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.status-aktif {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-selesai {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+.status-dibatalkan {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .booking-card .col-md-3 {
+        height: 200px;
+    }
+    
+    .filter-container {
+        flex-wrap: wrap;
+    }
+    
+    .filter-btn {
+        margin-bottom: 10px;
+    }
+}
