@@ -115,6 +115,25 @@ main.container {
   padding-bottom: 0.5rem;
 }
 
+.rating-stars {
+    font-size: 1.5em;
+    color: #ccc; 
+    cursor: pointer;
+}
+
+.rating-stars .fas.fa-star { 
+    color: #ffc107;
+}
+
+.rating-stars .far.fa-star:hover,
+.rating-stars .fas.fa-star:hover {
+    color: #ffc107; 
+}
+
+
+.review-item .rounded-circle {
+    object-fit: cover;
+}
 
 .time-slots-container {
     margin-top: 1rem;
