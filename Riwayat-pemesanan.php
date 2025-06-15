@@ -18,7 +18,6 @@ $username = $_SESSION['username'];
 $currentPage = 'booking-saya.php';
 $is_profile_page = false;
 $is_dashboard_page = false;
-
 ?>
 
 <!DOCTYPE html>
@@ -31,7 +30,6 @@ $is_dashboard_page = false;
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/halaman pemesanan.css">
     <style>
-        /* Tambahan gaya khusus */
         .empty-state {
             background-color: #f8f9fa;
             border-radius: 10px;
@@ -42,6 +40,24 @@ $is_dashboard_page = false;
             font-size: 4rem;
             color: #dc3545;
             margin-bottom: 20px;
+        }
+        .payment-method-badge {
+            background-color: #e9ecef;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        .payment-saldo {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .payment-qris {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+        .payment-transfer {
+            background-color: #fff3cd;
+            color: #856404;
         }
     </style>
 </head>
@@ -85,9 +101,22 @@ $is_dashboard_page = false;
                                         <h5 class="card-title mb-1"><?= htmlspecialchars($booking['nama_venue']) ?></h5>
                                         <p class="card-subtitle text-muted small"><?= htmlspecialchars($booking['nama_lapangan']) ?></p>
                                     </div>
-                                    <span class="badge status-badge status-<?= strtolower($booking['status']) ?>">
-                                        <?= htmlspecialchars($booking['status']) ?>
-                                    </span>
+                                    <div>
+                                        <span class="badge status-badge status-<?= strtolower($booking['status']) ?>">
+                                            <?= htmlspecialchars($booking['status']) ?>
+                                        </span>
+                                        <div class="mt-1">
+                                            <span class="payment-method-badge payment-<?= 
+                                                $booking['payment_method'] === 'saldo' ? 'saldo' : 
+                                                ($booking['payment_method'] === 'qris' ? 'qris' : 'transfer')
+                                            ?>">
+                                                <?= 
+                                                    $booking['payment_method'] === 'saldo' ? 'Saldo' : 
+                                                    ($booking['payment_method'] === 'qris' ? 'QRIS' : 'Transfer Bank')
+                                                ?>
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                                 
                                 <hr class="my-2">
