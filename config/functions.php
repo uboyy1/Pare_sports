@@ -120,14 +120,39 @@ function getBookingsByUserId($conn, $user_id) {
     }
 }
 
-function getUserBalance($conn, $user_id) {
+// Tambahkan fungsi ini di functions.php
+function updateUserBalance($conn, $user_id, $amount, $type, $description) {
+    $conn->beginTransaction();
     try {
-        $stmt = $conn->prepare("SELECT balance FROM user_balances WHERE user_id = ?");
+        // Dapatkan saldo saat ini
+        $stmt = $conn->prepare("SELECT balance FROM user_balances WHERE user_id = ? FOR UPDATE");
         $stmt->execute([$user_id]);
-        return $stmt->fetchColumn() ?: 0.00;
-    } catch (PDOException $e) {
-        error_log("Database Error in getUserBalance: " . $e->getMessage());
-        return 0.00;
+        $current_balance = $stmt->fetchColumn();
+        
+        // Jika belum ada record, buat baru
+        if ($current_balance === false) {
+            $current_balance = 0.00;
+            $stmt = $conn->prepare("INSERT INTO user_balances (user_id, balance) VALUES (?, ?)");
+            $stmt->execute([$user_id, $current_balance]);
+        }
+        
+        // Hitung saldo baru
+        $new_balance = $current_balance + $amount;
+        
+        // Update saldo
+        $stmt = $conn->prepare("UPDATE user_balances SET balance = ? WHERE user_id = ?");
+        $stmt->execute([$new_balance, $user_id]);
+        
+        // Catat transaksi
+        $stmt = $conn->prepare("INSERT INTO transactions (user_id, amount, type, description) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$user_id, $amount, $type, $description]);
+        
+        $conn->commit();
+        return $new_balance;
+    } catch (Exception $e) {
+        $conn->rollBack();
+        error_log("Error updating balance: " . $e->getMessage());
+        return false;
     }
 }
 /**
