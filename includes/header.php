@@ -88,8 +88,8 @@ $is_dashboard_page = (
             <?php if ($is_dashboard_page): ?>
                 <!-- Show Profile and Booking on dashboard pages -->
                 <li><a class="dropdown-item" href="profil.php"><i class="fas fa-user me-2"></i>Profil</a></li>
-                <?php if ($user_role == 'user' && $currentPage !== 'booking-saya.php'): ?>
-                <li><a class="dropdown-item" href="booking-saya.php"><i class="fas fa-calendar-alt me-2"></i>Booking Saya</a></li>
+                <?php if ($user_role == 'user' && $currentPage !== 'Riwayat-pemesanan.php'): ?>
+                <li><a class="dropdown-item" href="Riwayat-pemesanan.php"><i class="fas fa-calendar-alt me-2"></i>Booking Saya</a></li>
                 <?php endif; ?>
                 
             <?php elseif ($is_profile_page): ?>
@@ -102,8 +102,8 @@ $is_dashboard_page = (
                         <i class="fas fa-tachometer-alt me-2"></i>Dashboard
                     </a>
                 </li>
-                <?php if ($user_role == 'user' && $currentPage !== 'booking-saya.php'): ?>
-                <li><a class="dropdown-item" href="booking-saya.php"><i class="fas fa-calendar-alt me-2"></i>Booking Saya</a></li>
+                <?php if ($user_role == 'user' && $currentPage !== 'Riwayat-pemesanan.php'): ?>
+                <li><a class="dropdown-item" href="Riwayat-pemesanan.php"><i class="fas fa-calendar-alt me-2"></i>Booking Saya</a></li>
                 <?php endif; ?>
                 
             <?php else: ?>
@@ -117,8 +117,8 @@ $is_dashboard_page = (
                     </a>
                 </li>
                 <li><a class="dropdown-item" href="profil.php"><i class="fas fa-user me-2"></i>Profil</a></li>
-                <?php if ($user_role == 'user' && $currentPage !== 'booking-saya.php'): ?>
-                <li><a class="dropdown-item" href="booking-saya.php"><i class="fas fa-calendar-alt me-2"></i>Booking Saya</a></li>
+                <?php if ($user_role == 'user' && $currentPage !== 'Riwayat-pemesanan.php'): ?>
+                <li><a class="dropdown-item" href="Riwayat-pemesanan.php"><i class="fas fa-calendar-alt me-2"></i>Booking Saya</a></li>
                 <?php endif; ?>
             <?php endif; ?>
             

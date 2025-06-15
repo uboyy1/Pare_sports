@@ -1,9 +1,4 @@
 <?php
-// FILE: config/functions.php
-
-/**
- * Mengambil data detail sebuah lapangan berdasarkan ID-nya
- */
 function getLapanganById($conn, $id) {
     try {
         $stmt = $conn->prepare("SELECT * FROM lapangan WHERE id = :id");
@@ -16,16 +11,10 @@ function getLapanganById($conn, $id) {
     }
 }
 
-/**
- * Alias untuk getLapanganById (kompatibilitas)
- */
 function getVenueById($conn, $id) {
     return getLapanganById($conn, $id);
 }
 
-/**
- * Mengambil semua data lapangan
- */
 function getAllVenues($conn) {
      try {
         $stmt = $conn->prepare("SELECT * FROM lapangan ORDER BY nama_venue");
@@ -37,9 +26,6 @@ function getAllVenues($conn) {
     }
 }
 
-/**
- * Mengambil daftar lapangan dengan filter dan pagination
- */
 function getLapangan($conn, $sport_filter, $search_query, $per_page, $offset) {
     $sql = "SELECT * FROM lapangan WHERE 1=1";
     $params = [];
@@ -74,9 +60,7 @@ function getLapangan($conn, $sport_filter, $search_query, $per_page, $offset) {
     }
 }
 
-/**
- * Menghitung total lapangan untuk pagination
- */
+
 function countLapangan($conn, $sport_filter, $search_query) {
     $sql = "SELECT COUNT(*) as total FROM lapangan WHERE 1=1";
     $params = [];
@@ -107,18 +91,18 @@ function countLapangan($conn, $sport_filter, $search_query) {
     }
 }
 
-/**
- * Mengambil riwayat booking pengguna
- */
 function getBookingsByUserId($conn, $user_id) {
     $sql = "SELECT 
                 b.id AS booking_id, 
                 b.tanggal AS booking_date,
                 b.jam_mulai AS start_time,
                 b.jam_selesai AS end_time,
+                b.durasi,
                 b.total_harga AS total_price,
                 b.status,
+                b.payment_method,
                 l.nama_venue, 
+                l.nama_lapangan,
                 l.gambar AS venue_gambar
             FROM booking b
             JOIN lapangan l ON b.lapangan_id = l.id
@@ -133,5 +117,16 @@ function getBookingsByUserId($conn, $user_id) {
     } catch (PDOException $e) {
         error_log("Database Error in getBookingsByUserId: " . $e->getMessage());
         return [];
+    }
+}
+
+function getUserBalance($conn, $user_id) {
+    try {
+        $stmt = $conn->prepare("SELECT balance FROM user_balances WHERE user_id = ?");
+        $stmt->execute([$user_id]);
+        return $stmt->fetchColumn() ?: 0.00;
+    } catch (PDOException $e) {
+        error_log("Database Error in getUserBalance: " . $e->getMessage());
+        return 0.00;
     }
 }
