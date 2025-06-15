@@ -1,6 +1,13 @@
 <footer class="footer py-4 bg-dark text-white">
   <div class="container">
     <div class="row">
+      <div class="col-md-3">
+    <h5>Untuk Pengelola</h5>
+    <ul class="list-unstyled">
+        <li><a href="register_pengelola.php">Daftar sebagai Pengelola</a></li>
+        <li><a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login Pengelola</a></li>
+    </ul>
+</div>
       <div class="col-md-4">
         <h6>PARESPORTS</h6>
         <p>Jl. Pemuda, Parepare, Sulawesi Selatan</p>
