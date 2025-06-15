@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if ($role == 'admin') {
                 header('Location: ../admin/dashboard-admin.php');
             } elseif ($role == 'pengelola') {
-                header('Location: ../pengelola/dashboard-pengelola.php');
+                header('Location: ../manager/dashboard-pengelola.php');
             } else {
                 header('Location: ../index.php');
             }

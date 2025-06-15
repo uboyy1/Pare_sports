@@ -111,7 +111,7 @@ $is_dashboard_page = (
                 <li>
                     <a class="dropdown-item" href="<?= 
                         ($user_role == 'admin') ? 'admin/dashboard-admin.php' : 
-                        (($user_role == 'pengelola') ? 'pengelola/dashboard-pengelola.php' : 'index.php')
+                        (($user_role == 'pengelola') ? 'manager/dashboard-pengelola.php' : 'index.php')
                     ?>">
                         <i class="fas fa-tachometer-alt me-2"></i>Dashboard
                     </a>
@@ -132,7 +132,7 @@ $is_dashboard_page = (
           <i class="fas fa-user-shield me-1"></i>Admin
         </a>
         <?php elseif ($user_role == 'pengelola' && $currentPage !== 'dashboard-pengelola.php'): ?>
-        <a href="pengelola/dashboard-pengelola.php" class="btn btn-warning me-2">
+        <a href="manager/dashboard-pengelola.php" class="btn btn-warning me-2">
           <i class="fas fa-user-tie me-1"></i>Pengelola
         </a>
         <?php endif; ?>

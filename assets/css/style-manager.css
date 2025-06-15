@@ -1,0 +1,84 @@
+#wrapper {
+    display: flex;
+}
+
+#sidebar-wrapper {
+    min-height: 100vh;
+    width: 250px;
+    transition: margin .25s ease-out;
+}
+
+#sidebar-wrapper .sidebar-heading {
+    padding: 0.875rem 1.25rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+#sidebar-wrapper .list-group-item {
+    background-color: #343a40;
+    color: rgba(255, 255, 255, .7);
+    border: none;
+}
+
+#sidebar-wrapper .list-group-item:hover {
+    background-color: #495057;
+    color: #fff;
+}
+
+#sidebar-wrapper .list-group-item.active {
+    background-color: #d20000;
+    color: #fff;
+}
+
+#page-content-wrapper {
+    min-width: 0;
+    width: 100%;
+}
+
+body {
+    background-color: #f4f7f6;
+}
+
+.card {
+    border-radius: .5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, .075);
+    border: none;
+}
+
+.card-stat h5 {
+    color: #6c757d;
+}
+
+.bg-light-danger {
+    background-color: #fce8e6 !important;
+}
+
+.bg-light-success {
+    background-color: #e6f4ea !important;
+}
+
+.badge.status-dikonfirmasi,
+.badge.status-aktif {
+    background-color: #28a745 !important;
+}
+
+.badge.status-selesai {
+    background-color: #6c757d !important;
+}
+
+.badge.status-dibatalkan {
+    background-color: #dc3545 !important;
+}
+
+.badge.status-pending {
+    background-color: #ffc107 !important;
+    color: #000 !important;
+}
+/* Custom style for sidebar logo background */
+#sidebar-wrapper .sidebar-heading {
+    background-color: #ffffff; /* Mengubah latar belakang header menjadi putih */
+}
+
+#sidebar-wrapper .sidebar-heading a {
+    color: #343a40 !important; /* Mengubah warna teks link di header menjadi gelap agar terbaca */
+}
