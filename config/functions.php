@@ -312,3 +312,92 @@ function getBookingsForFieldOnDate($conn, $lapangan_id, $date) {
         return [];
     }
 }
+
+// New functions for Admin
+function countTotalUsers($conn) {
+    try {
+        $stmt = $conn->prepare("SELECT COUNT(*) FROM users WHERE role = 'user'");
+        $stmt->execute();
+        return (int)$stmt->fetchColumn(); // Mengambil jumlah total pengguna
+    } catch (PDOException $e) {
+        error_log("Database Error in countTotalUsers: " . $e->getMessage());
+        return 0;
+    }
+}
+
+function countTotalManagers($conn) {
+    try {
+        $stmt = $conn->prepare("SELECT COUNT(*) FROM users WHERE role = 'pengelola'");
+        $stmt->execute();
+        return (int)$stmt->fetchColumn(); // Mengambil jumlah total pengelola
+    } catch (PDOException $e) {
+        error_log("Database Error in countTotalManagers: " . $e->getMessage());
+        return 0;
+    }
+}
+
+function countTotalBookings($conn) {
+    try {
+        $stmt = $conn->prepare("SELECT COUNT(*) FROM booking WHERE status IN ('confirmed', 'selesai')"); // Contoh status booking yang dihitung
+        $stmt->execute();
+        return (int)$stmt->fetchColumn(); // Mengambil jumlah total booking
+    } catch (PDOException $e) {
+        error_log("Database Error in countTotalBookings: " . $e->getMessage());
+        return 0;
+    }
+}
+
+/**
+ * Mengambil daftar pengguna dengan status tertentu (misalnya 'pending').
+ * @param PDO $conn Koneksi database.
+ * @param string $status Status pengguna yang ingin diambil.
+ * @return array Daftar pengguna.
+ */
+function getUsersbyStatus($conn, $status = 'pending') {
+    try {
+        $stmt = $conn->prepare("SELECT id, nama, email, username, status FROM users WHERE role = 'user' AND status = :status ORDER BY id DESC");
+        $stmt->bindParam(':status', $status);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Database Error in getUsersbyStatus: " . $e->getMessage());
+        return [];
+    }
+}
+
+/**
+ * Mengambil daftar pengelola dengan status tertentu (misalnya 'pending').
+ * @param PDO $conn Koneksi database.
+ * @param string $status Status pengelola yang ingin diambil.
+ * @return array Daftar pengelola.
+ */
+function getManagersbyStatus($conn, $status = 'pending') {
+    try {
+        $stmt = $conn->prepare("SELECT id, nama, email, username, status FROM users WHERE role = 'pengelola' AND status = :status ORDER BY id DESC");
+        $stmt->bindParam(':status', $status);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Database Error in getManagersbyStatus: " . $e->getMessage());
+        return [];
+    }
+}
+
+/**
+ * Memperbarui status pengguna atau pengelola.
+ * @param PDO $conn Koneksi database.
+ * @param int $userId ID pengguna/pengelola.
+ * @param string $newStatus Status baru ('verified', 'rejected').
+ * @return bool True jika berhasil, false jika gagal.
+ */
+function updateVerificationStatus($conn, $userId, $newStatus) {
+    try {
+        $stmt = $conn->prepare("UPDATE users SET status = :new_status WHERE id = :id");
+        $stmt->bindParam(':new_status', $newStatus);
+        $stmt->bindParam(':id', $userId, PDO::PARAM_INT);
+        return $stmt->execute();
+    } catch (PDOException $e) {
+        error_log("Database Error in updateVerificationStatus: " . $e->getMessage());
+        return false;
+    }
+}

@@ -11,7 +11,7 @@ $username = $is_logged_in ? $_SESSION['username'] : '';
 $currentPage = basename($_SERVER['PHP_SELF']);
 $is_profile_page = ($currentPage === 'profil.php');
 $is_dashboard_page = (
-    $currentPage === 'dashboard-admin.php' || 
+    $currentPage === 'dashboard_admin.php' || 
     $currentPage === 'dashboard-pengelola.php' || 
     ($currentPage === 'index.php' && $user_role === 'user')
 );
