@@ -1,5 +1,12 @@
 /* assets/css/booking.css */
 
+:root {
+  --primary-color: #d20000;
+  --secondary-color: #ffc107;
+  --dark-color: #212529;
+  --light-color: #f8f9fa;
+  --gray-color: #6c757d;
+}
 
 .hero {
   position: relative;
@@ -85,14 +92,14 @@ main.container {
 
 .venue-price h2 {
     font-weight: 700;
-    color: #d9534f;
+    color: var(--primary-color); /* Updated to primary color */
 }
 
 .check-availability {
   display: block;
   width: 100%;
   padding: 12px;
-  background-color: #d9534f;
+  background-color: var(--primary-color); /* Updated to primary color */
   color: white;
   text-align: center;
   text-decoration: none;
@@ -102,7 +109,7 @@ main.container {
 }
 
 .check-availability:hover {
-  background-color: #c9302c;
+  background-color: #9a0000; /* Darker shade for hover */
   color: white;
 }
 
@@ -122,12 +129,12 @@ main.container {
 }
 
 .rating-stars .fas.fa-star { 
-    color: #ffc107;
+    color: var(--secondary-color); /* Updated to secondary color */
 }
 
 .rating-stars .far.fa-star:hover,
 .rating-stars .fas.fa-star:hover {
-    color: #ffc107; 
+    color: var(--secondary-color); /* Updated to secondary color */
 }
 
 
@@ -158,13 +165,13 @@ main.container {
 
 .time-slot:hover {
     background-color: #f0f0f0;
-    border-color: #d9534f;
+    border-color: var(--primary-color); /* Updated to primary color */
 }
 
 .time-slot.selected {
-    background-color: #d9534f;
+    background-color: var(--primary-color); /* Updated to primary color */
     color: white;
-    border-color: #d9534f;
+    border-color: var(--primary-color); /* Updated to primary color */
 }
 
 .time-slot.booked {
@@ -180,6 +187,11 @@ main.container {
     border-radius: 8px;
 }
 
+/* Payment method section removed */
+.payment-methods {
+  display: none !important;
+}
+
 .payment-method {
     padding: 10px;
     border: 1px solid #ddd;
@@ -189,6 +201,6 @@ main.container {
 }
 
 .payment-method.selected {
-    border-color: #d9534f;
+    border-color: var(--primary-color); /* Updated to primary color */
     background-color: #fdf3f2;
 }

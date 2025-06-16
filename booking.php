@@ -192,7 +192,7 @@ if ($isLoggedIn && $userId !== null && $userId > 0) {
                     </div>
                     <div class="alert alert-danger d-none" id="reviewError" role="alert"></div>
                     <div class="alert alert-success d-none" id="reviewSuccess" role="alert"></div>
-                    <button type="submit" class="btn btn-primary" id="submitReviewBtn">Kirim Ulasan</button>
+                    <button type="submit" class="btn btn-danger" id="submitReviewBtn">Kirim Ulasan</button>
                 </form>
             </div>
         <?php elseif ($isLoggedIn && !$canUserReview && $hasReviewed): ?>
@@ -278,12 +278,6 @@ if ($isLoggedIn && $userId !== null && $userId > 0) {
                             <p><strong>Durasi:</strong> <span id="summaryDuration">-</span></p>
                             <hr>
                             <p class="fs-5"><strong>Total:</strong> <span id="summaryTotal" class="fw-bold">Rp 0</span></p>
-                            <div class="payment-methods mt-3">
-                                <h5>Metode Pembayaran</h5>
-                                <div class="payment-method" data-method="qris">
-                                    <span>QRIS</span>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -323,7 +317,6 @@ document.addEventListener('DOMContentLoaded', function() {
         fieldName: null,
         fieldPrice: 0,
         time: null,
-        paymentMethod: null,
         date: null,
     };
 
@@ -337,9 +330,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function resetBookingState() {
-        state = { fieldId: null, fieldName: null, fieldPrice: 0, time: null, paymentMethod: null, date: null };
+        state = { fieldId: null, fieldName: null, fieldPrice: 0, time: null, date: null };
         bookingModalEl.querySelectorAll('.time-slot.selected').forEach(s => s.classList.remove('selected'));
-        bookingModalEl.querySelectorAll('.payment-method.selected').forEach(m => m.classList.remove('selected'));
         proceedPaymentBtn.disabled = true;
     }
 
@@ -355,9 +347,8 @@ document.addEventListener('DOMContentLoaded', function() {
         bookingModalEl.querySelector('#summaryDuration').textContent = `${duration} Jam`;
         bookingModalEl.querySelector('#summaryTotal').textContent = formatToRupiah(totalPrice);
 
-        if (state.paymentMethod) {
-            proceedPaymentBtn.disabled = false;
-        }
+        // Aktifkan tombol pembayaran setelah memilih waktu
+        proceedPaymentBtn.disabled = false;
     }
 
     async function fetchAndRenderTimeSlots() {
@@ -424,18 +415,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     durationSelect.addEventListener('change', updateBookingSummary);
 
-    bookingModalEl.querySelectorAll('.payment-method').forEach(method => {
-        method.addEventListener('click', function() {
-            bookingModalEl.querySelectorAll('.payment-method.selected').forEach(m => m.classList.remove('selected'));
-            this.classList.add('selected');
-            state.paymentMethod = this.dataset.method;
-            updateBookingSummary();
-        });
-    });
-
     proceedPaymentBtn.addEventListener('click', function() {
-        if (!state.time || !state.paymentMethod) {
-            alert('Silakan pilih waktu dan metode pembayaran.');
+        if (!state.time) {
+            alert('Silakan pilih waktu.');
             return;
         }
 

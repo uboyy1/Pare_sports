@@ -4,10 +4,10 @@ require_once '../config/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $user_id = $_SESSION['user_id'];
-    $nama = $_POST['nama'];
-    $username = $_POST['username']; // TAMBAHKAN USERNAME DARI FORM
-    $phone = $_POST['phone'];
-    $address = $_POST['address'];
+    $nama = trim($_POST['nama']);
+    $username = trim($_POST['username']);
+    $phone = trim($_POST['phone']);
+    $address = trim($_POST['address']);
     
     // Handle file upload
     $profile_picture = $_SESSION['profile_picture']; // default to existing picture
@@ -53,25 +53,56 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
     
-    // Update data di database - TAMBAHKAN USERNAME
-    $query = "UPDATE users SET nama = :nama, username = :username, phone = :phone, address = :address, profile_picture = :profile_picture WHERE id = :id";
-    $stmt = $conn->prepare($query);
-    $stmt->bindParam(':nama', $nama);
-    $stmt->bindParam(':username', $username); // BIND USERNAME
-    $stmt->bindParam(':phone', $phone);
-    $stmt->bindParam(':address', $address);
-    $stmt->bindParam(':profile_picture', $profile_picture);
-    $stmt->bindParam(':id', $user_id, PDO::PARAM_INT);
+    // Validasi format username
+    if (!preg_match('/^[a-zA-Z0-9_]+$/', $username)) {
+        $_SESSION['profile_error'] = "Username hanya boleh mengandung huruf, angka, dan underscore (_).";
+        header('Location: ../profil.php');
+        exit();
+    }
     
-    if ($stmt->execute()) {
-        // Update session data - TAMBAHKAN USERNAME
-        $_SESSION['username'] = $username;
-        $_SESSION['nama'] = $nama;
-        $_SESSION['profile_picture'] = $profile_picture;
+    // Validasi username unik untuk user lain
+    $query = "SELECT id FROM users WHERE username = :username AND id != :id";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(':username', $username);
+    $stmt->bindParam(':id', $user_id, PDO::PARAM_INT);
+    $stmt->execute();
+    
+    if ($stmt->rowCount() > 0) {
+        $_SESSION['profile_error'] = "Username sudah digunakan oleh pengguna lain!";
+        header('Location: ../profil.php');
+        exit();
+    }
+    
+    // Update data di database
+    $query = "UPDATE users SET nama = :nama, username = :username, phone = :phone, 
+              address = :address, profile_picture = :profile_picture WHERE id = :id";
+    
+    try {
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':nama', $nama);
+        $stmt->bindParam(':username', $username);
+        $stmt->bindParam(':phone', $phone);
+        $stmt->bindParam(':address', $address);
+        $stmt->bindParam(':profile_picture', $profile_picture);
+        $stmt->bindParam(':id', $user_id, PDO::PARAM_INT);
         
-        $_SESSION['profile_success'] = "Profil berhasil diperbarui!";
-    } else {
-        $_SESSION['profile_error'] = "Gagal memperbarui profil: " . $stmt->errorInfo()[2];
+        if ($stmt->execute()) {
+            // Update session data
+            $_SESSION['username'] = $username;
+            $_SESSION['nama'] = $nama;
+            $_SESSION['profile_picture'] = $profile_picture;
+            
+            $_SESSION['profile_success'] = "Profil berhasil diperbarui!";
+        } else {
+            $errorInfo = $stmt->errorInfo();
+            $_SESSION['profile_error'] = "Gagal memperbarui profil: " . $errorInfo[2];
+        }
+    } catch (PDOException $e) {
+        if ($e->getCode() == 23000) {
+            $_SESSION['profile_error'] = "Username sudah digunakan!";
+        } else {
+            $_SESSION['profile_error'] = "Error sistem: " . $e->getMessage();
+        }
     }
     
     header('Location: ../profil.php');
@@ -80,3 +111,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     header('Location: ../profil.php');
     exit();
 }
+?>
