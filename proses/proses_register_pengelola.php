@@ -51,8 +51,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
         $role = 'pengelola';
 
-        $sql = "INSERT INTO users (nama, username, email, password, phone, address, role) 
-                VALUES (:nama, :username, :email, :password, :phone, :address, :role)";
+        $sql = "INSERT INTO users (nama, username, email, password, phone, address, role, status) 
+                VALUES (:nama, :username, :email, :password, :phone, :address, :role, 'pending')";
         $stmt = $conn->prepare($sql);
 
         $stmt->bindParam(':nama', $nama);

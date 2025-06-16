@@ -13,14 +13,13 @@ define('PLATFORM_FEE_PERCENTAGE', 0.03); // Asumsi potongan platform 3%
 $start_date = $_GET['start_date'] ?? date('Y-m-01');
 $end_date = $_GET['end_date'] ?? date('Y-m-t');
 
-// TODO: Implement getSystemFinancialReport($conn, $start_date, $end_date) in functions.php
-// This function should fetch all confirmed/completed bookings across all venues.
-$report = [
-    'transactions' => [],
-    'total_gross_revenue' => 0,
-    'total_platform_fee' => 0,
-    'total_net_revenue' => 0
-];
+
+$start_date = $_GET['start_date'] ?? date('Y-m-01');
+$end_date = $_GET['end_date'] ?? date('Y-m-t');
+
+// Panggil fungsi yang telah diimplementasikan
+$report = getSystemFinancialReport($conn, $start_date, $end_date);
+// ...
 
 // Example of how getSystemFinancialReport might work (needs to be in functions.php)
 // $sql = "SELECT b.id, b.tanggal, b.total_harga, l.nama_venue, u.nama as nama_user

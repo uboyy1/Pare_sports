@@ -57,8 +57,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     
     // Insert user baru
-    $query = "INSERT INTO users (nama, username, email, password, role) 
-              VALUES (:nama, :username, :email, :password, 'user')";
+    $query = "INSERT INTO users (nama, username, email, password, role, status) 
+              VALUES (:nama, :username, :email, :password, 'user', 'pending')";
     
     try {
         $stmt = $conn->prepare($query);
