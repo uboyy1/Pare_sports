@@ -467,3 +467,50 @@ function updateVerificationStatus($conn, $userId, $newStatus) {
         return false;
     }
 }
+
+
+// Contoh implementasi di config/functions.php
+function getSystemFinancialReport($conn, $start_date, $end_date) {
+    $report = [
+        'transactions' => [],
+        'total_gross_revenue' => 0,
+        'total_platform_fee' => 0,
+        'total_net_revenue' => 0
+    ];
+
+    // Asumsi potongan platform sama dengan ADMIN_FEE_PERCENTAGE di manager/laporan-keuangan.php
+    if (!defined('PLATFORM_FEE_PERCENTAGE')) {
+    define('PLATFORM_FEE_PERCENTAGE', 0.03);
+    }
+
+    $sql = "SELECT b.id, b.tanggal, b.total_harga, l.nama_venue, u.nama as nama_pengelola
+            FROM booking b
+            JOIN lapangan l ON b.lapangan_id = l.id
+            JOIN users u ON l.pengelola_id = u.id
+            WHERE b.status IN ('confirmed', 'completed')
+            AND b.tanggal BETWEEN :start_date AND :end_date
+            AND b.offline_customer_name IS NULL"; // Hanya transaksi online system
+
+    try {
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':start_date', $start_date);
+        $stmt->bindParam(':end_date', $end_date);
+        $stmt->execute();
+
+        $transactions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $total_gross_revenue = array_sum(array_column($transactions, 'total_harga'));
+
+        $total_platform_fee = $total_gross_revenue * PLATFORM_FEE_PERCENTAGE; 
+        $total_net_revenue = $total_gross_revenue - $total_platform_fee;
+
+        $report['transactions'] = $transactions;
+        $report['total_gross_revenue'] = $total_gross_revenue;
+        $report['total_platform_fee'] = $total_platform_fee;
+        $report['total_net_revenue'] = $total_net_revenue; // Ini adalah total yang diterima pengelola secara kolektif
+
+        return $report;
+    } catch (PDOException $e) {
+        error_log("Database Error in getSystemFinancialReport: " . $e->getMessage());
+        return $report;
+    }
+}

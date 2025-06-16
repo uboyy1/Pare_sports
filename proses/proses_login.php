@@ -7,8 +7,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $password = $_POST['password'];
     $role = $_POST['role'];
 
-    // Gunakan prepared statement dengan PDO
-    $query = "SELECT * FROM users WHERE email = :email AND role = :role";
+    // Use prepared statement with PDO
+    // Add status check to the query
+    $query = "SELECT * FROM users WHERE email = :email AND role = :role AND status = 'verified'"; // Added status check
     $stmt = $conn->prepare($query);
     $stmt->bindParam(':email', $email);
     $stmt->bindParam(':role', $role);
@@ -23,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['email'] = $user['email'];
             $_SESSION['role'] = $user['role'];
             
-            // Redirect berdasarkan role
+            // Redirect based on role
             if ($role == 'admin') {
                 header('Location: ../admin/dashboard_admin.php');
             } elseif ($role == 'pengelola') {
@@ -38,7 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             exit();
         }
     } else {
-        $_SESSION['login_error'] = "Email tidak ditemukan!";
+        // Modified error message to be more generic for security
+        $_SESSION['login_error'] = "Email atau status akun belum diverifikasi. Silakan hubungi admin.";
         header('Location: ../index.php');
         exit();
     }
