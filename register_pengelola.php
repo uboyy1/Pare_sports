@@ -1,9 +1,5 @@
-<?php
+=<?php
 session_start();
-// Baris ini bersifat opsional, hanya untuk memastikan tidak ada error jika session sudah ada
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -76,11 +72,24 @@ if (session_status() === PHP_SESSION_NONE) {
         var password = document.getElementById("password").value;
         var confirm_password = document.getElementById("confirm_password").value;
         var helpText = document.getElementById("passwordHelp");
-        if (password !== confirm_password) {
+        
+        // Reset tampilan error
+        helpText.style.display = 'none';
+        
+        // Validasi panjang password
+        if (password.length < 8) {
+            helpText.textContent = "Password minimal 8 karakter!";
             helpText.style.display = 'block';
             return false;
         }
-        helpText.style.display = 'none';
+        
+        // Validasi kesesuaian password
+        if (password !== confirm_password) {
+            helpText.textContent = "Password tidak cocok!";
+            helpText.style.display = 'block';
+            return false;
+        }
+        
         return true;
     }
     </script>

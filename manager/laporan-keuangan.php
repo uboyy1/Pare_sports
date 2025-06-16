@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'pengelola') {
     exit();
 }
 
-define('ADMIN_FEE_PERCENTAGE', 0.10); // Potongan admin 10%
+define('ADMIN_FEE_PERCENTAGE', 0.03); // Potongan admin 10%
 $manager_id = $_SESSION['user_id'];
 
 $start_date = $_GET['start_date'] ?? date('Y-m-01');
@@ -83,7 +83,7 @@ $page_title = "Laporan Keuangan";
                      <div class="col-md-4">
                         <div class="card card-stat bg-light-danger">
                             <div class="card-body">
-                                <h5 class="card-title">Total Potongan Admin (10%)</h5>
+                                <h5 class="card-title">Total Potongan Admin (3%)</h5>
                                 <p class="card-text fs-4 fw-bold">Rp <?= number_format($report['total_potongan'], 0, ',', '.') ?></p>
                             </div>
                         </div>

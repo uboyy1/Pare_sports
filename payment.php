@@ -37,7 +37,6 @@ $stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Perbaikan: Pastikan data user ditemukan
 if (!$user) {
     die("User tidak ditemukan.");
 }
@@ -87,12 +86,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment_method'])) {
             }
         }
     } elseif ($payment_method === 'qris') {
-        // Simpan booking dengan status confirmed dan metode qris
-        $stmt = $conn->prepare("INSERT INTO booking (user_id, lapangan_id, tanggal, jam_mulai, jam_selesai, durasi, total_harga, status, payment_method) VALUES (?, ?, ?, ?, ?, ?, ?, 'confirmed', ?)");
-        $stmt->execute([$user_id, $field_id, $date, $start_time, $end_time, $duration, $total_price, 'qris']);
-        $booking_id = $conn->lastInsertId();
-        header('Location: booking_success.php?id=' . $booking_id);
-        exit();
+        try {
+            // Simpan booking dengan status confirmed dan metode qris
+            $stmt = $conn->prepare("INSERT INTO booking (user_id, lapangan_id, tanggal, jam_mulai, jam_selesai, durasi, total_harga, status, payment_method) VALUES (?, ?, ?, ?, ?, ?, ?, 'confirmed', ?)");
+            $stmt->execute([$user_id, $field_id, $date, $start_time, $end_time, $duration, $total_price, 'qris']);
+            $booking_id = $conn->lastInsertId();
+            header('Location: booking_success.php?id=' . $booking_id);
+            exit();
+        } catch (Exception $e) {
+            $error = "Terjadi kesalahan: " . $e->getMessage();
+        }
     } elseif ($payment_method === 'transfer') {
         // Handle upload bukti transfer
         if (isset($_FILES['payment_proof']) && $_FILES['payment_proof']['error'] === UPLOAD_ERR_OK) {
@@ -105,12 +108,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment_method'])) {
             $target_file = $target_dir . $file_name;
             
             if (move_uploaded_file($_FILES['payment_proof']['tmp_name'], $target_file)) {
-                // Simpan booking dengan status pending dan metode transfer, simpan bukti
-                $stmt = $conn->prepare("INSERT INTO booking (user_id, lapangan_id, tanggal, jam_mulai, jam_selesai, durasi, total_harga, status, payment_method, payment_proof) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?)");
-                $stmt->execute([$user_id, $field_id, $date, $start_time, $end_time, $duration, $total_price, 'transfer', $file_name]);
-                $booking_id = $conn->lastInsertId();
-                header('Location: booking_pending.php?id=' . $booking_id);
-                exit();
+                try {
+                    // Simpan booking dengan status pending dan metode transfer, simpan bukti
+                    $stmt = $conn->prepare("INSERT INTO booking (user_id, lapangan_id, tanggal, jam_mulai, jam_selesai, durasi, total_harga, status, payment_method, payment_proof) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?)");
+                    $stmt->execute([$user_id, $field_id, $date, $start_time, $end_time, $duration, $total_price, 'transfer', $file_name]);
+                    $booking_id = $conn->lastInsertId();
+                    header('Location: booking_pending.php?id=' . $booking_id);
+                    exit();
+                } catch (Exception $e) {
+                    $error = "Terjadi kesalahan: " . $e->getMessage();
+                }
             } else {
                 $error = "Gagal mengunggah bukti pembayaran.";
             }

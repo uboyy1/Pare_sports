@@ -3,6 +3,12 @@ session_start();
 require_once 'config/database.php';
 require_once 'config/functions.php';
 
+// Ambil pesan sukses jika ada
+if (isset($_SESSION['success_message'])) {
+    $success_message = $_SESSION['success_message'];
+    unset($_SESSION['success_message']);
+}
+
 $sport_filter = isset($_GET['sport']) ? $_GET['sport'] : 'all';
 $search_query = isset($_GET['search']) ? $_GET['search'] : '';
 
@@ -50,6 +56,14 @@ if ($is_logged_in && !isset($_SESSION['profile_picture'])) {
 </head>
 <body>
   <?php include 'includes/header.php'; ?>
+
+  <!-- Tampilkan pesan sukses jika ada -->
+  <?php if (!empty($success_message)): ?>
+    <div class="alert alert-success alert-dismissible fade show text-center mb-0" role="alert">
+      <?= htmlspecialchars($success_message) ?>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <?php endif; ?>
 
   <!-- Hero Section -->
   <section class="hero d-flex flex-column justify-content-center align-items-center text-center">
@@ -148,12 +162,8 @@ if ($is_logged_in && !isset($_SESSION['profile_picture'])) {
                   </div>
                 </div>
               </div>
-              <p class="card-text text-muted small mt-auto">
-                Mulai: <strong>Rp<?= number_format($item['harga'], 0, ',', '.') ?></strong>
-              </p>
-              <a href="booking.php?id=<?= $item['id'] ?>" class="btn btn-danger btn-sm w-100 mt-2">
-                Booking Sekarang
-              </a>
+              <p class="card-text text-muted small mt-auto">Mulai: <strong>Rp<?= number_format($item['harga'], 0, ',', '.') ?></strong></p>
+              <a href="booking.php?id=<?= $item['id'] ?>" class="btn btn-danger btn-sm w-100 mt-2">Booking Sekarang</a>
             </div>
           </div>
         </div>
