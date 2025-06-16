@@ -24,6 +24,7 @@ $userId = $isLoggedIn ? (int)$_SESSION['user_id'] : null;
 $isAdmin = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
 $isManager = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'pengelola';
 
+// --- Bagian Review: Logic untuk Ambil Review yang Ada ---
 $reviews = [];
 $sql_reviews = "
     SELECT r.rating, r.komentar, r.created_at, u.nama, u.profile_picture
@@ -42,27 +43,12 @@ if ($stmt_reviews) {
 
 
 // --- Bagian Review: Logic untuk Cek Kelayakan User untuk Memberikan Review ---
+// PERUBAHAN UTAMA DI SINI: SANGAT DISIMPLIFIKASI
 $canUserReview = false;
-$hasCompletedBooking = false;
-$hasReviewed = false;
+$hasReviewed = false; // Tetap perlu cek apakah user sudah review
 
 if ($isLoggedIn && $userId !== null && $userId > 0) {
-    $current_datetime = date('Y-m-d H:i:s');
-
-    $sql_check_booking = "
-        SELECT id FROM booking
-        WHERE user_id = ? AND lapangan_id = ? AND status = 'completed'
-        AND CONCAT(tanggal, ' ', jam_selesai) < ? LIMIT 1
-    ";
-    $stmt_check_booking = $conn->prepare($sql_check_booking);
-    if ($stmt_check_booking) {
-        $stmt_check_booking->execute([$userId, $lapangan_id, $current_datetime]);
-        $result_check_booking = $stmt_check_booking->fetch(PDO::FETCH_ASSOC);
-        $hasCompletedBooking = ($result_check_booking !== false);
-    } else {
-        error_log("Failed to prepare statement for checking booking: " . implode(" - ", $conn->errorInfo()));
-    }
-
+    // Cek apakah user sudah pernah memberikan review untuk lapangan ini
     $sql_check_existing_review = "SELECT id FROM reviews WHERE user_id = ? AND lapangan_id = ? LIMIT 1";
     $stmt_check_existing_review = $conn->prepare($sql_check_existing_review);
     if ($stmt_check_existing_review) {
@@ -73,7 +59,8 @@ if ($isLoggedIn && $userId !== null && $userId > 0) {
         error_log("Failed to prepare statement for checking existing review: " . implode(" - ", $conn->errorInfo()));
     }
 
-    $canUserReview = $hasCompletedBooking && !$hasReviewed;
+    // User bisa review jika sudah login, ID valid, DAN BELUM pernah review
+    $canUserReview = !$hasReviewed;
 }
 ?>
 
@@ -133,7 +120,7 @@ if ($isLoggedIn && $userId !== null && $userId > 0) {
 
                     <h3>Alamat</h3>
                     <?php if (!empty($lapangan['maps_link'])): ?>
-                        <p><a href="<?= htmlspecialchars($lapangan['maps_link']) ?>" target="_blank" rel="noopener noreferrer"><?= htmlspecialchars($lapangan['alamat'] ?? 'Alamat tidak tersedia.') ?> <i class="fas fa-external-link-alt fa-xs"></i></a></p>
+                        <p><a href="<?= htmlspecialchars($lapapan['maps_link']) ?>" target="_blank" rel="noopener noreferrer"><?= htmlspecialchars($lapangan['alamat'] ?? 'Alamat tidak tersedia.') ?> <i class="fas fa-external-link-alt fa-xs"></i></a></p>
                     <?php else: ?>
                         <p><?= htmlspecialchars($lapangan['alamat'] ?? 'Alamat tidak tersedia.') ?></p>
                     <?php endif; ?>
@@ -192,16 +179,12 @@ if ($isLoggedIn && $userId !== null && $userId > 0) {
                     </div>
                     <div class="alert alert-danger d-none" id="reviewError" role="alert"></div>
                     <div class="alert alert-success d-none" id="reviewSuccess" role="alert"></div>
-                    <button type="submit" class="btn btn-danger" id="submitReviewBtn">Kirim Ulasan</button>
+                    <button type="submit" class="btn btn-primary" id="submitReviewBtn">Kirim Ulasan</button>
                 </form>
             </div>
         <?php elseif ($isLoggedIn && !$canUserReview && $hasReviewed): ?>
             <div class="alert alert-info" role="alert">
                 Anda sudah memberikan ulasan untuk lapangan ini.
-            </div>
-        <?php elseif ($isLoggedIn && !$canUserReview && $hasCompletedBooking === false): ?>
-            <div class="alert alert-warning" role="alert">
-                Anda dapat memberikan ulasan setelah menyelesaikan booking di lapangan ini.
             </div>
         <?php elseif (!$isLoggedIn): ?>
             <div class="alert alert-secondary" role="alert">
@@ -278,6 +261,12 @@ if ($isLoggedIn && $userId !== null && $userId > 0) {
                             <p><strong>Durasi:</strong> <span id="summaryDuration">-</span></p>
                             <hr>
                             <p class="fs-5"><strong>Total:</strong> <span id="summaryTotal" class="fw-bold">Rp 0</span></p>
+                            <div class="payment-methods mt-3">
+                                <h5>Metode Pembayaran</h5>
+                                <div class="payment-method" data-method="qris">
+                                    <span>QRIS</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -317,6 +306,7 @@ document.addEventListener('DOMContentLoaded', function() {
         fieldName: null,
         fieldPrice: 0,
         time: null,
+        paymentMethod: null,
         date: null,
     };
 
@@ -330,8 +320,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function resetBookingState() {
-        state = { fieldId: null, fieldName: null, fieldPrice: 0, time: null, date: null };
+        state = { fieldId: null, fieldName: null, fieldPrice: 0, time: null, paymentMethod: null, date: null };
         bookingModalEl.querySelectorAll('.time-slot.selected').forEach(s => s.classList.remove('selected'));
+        bookingModalEl.querySelectorAll('.payment-method.selected').forEach(m => m.classList.remove('selected'));
         proceedPaymentBtn.disabled = true;
     }
 
@@ -347,8 +338,9 @@ document.addEventListener('DOMContentLoaded', function() {
         bookingModalEl.querySelector('#summaryDuration').textContent = `${duration} Jam`;
         bookingModalEl.querySelector('#summaryTotal').textContent = formatToRupiah(totalPrice);
 
-        // Aktifkan tombol pembayaran setelah memilih waktu
-        proceedPaymentBtn.disabled = false;
+        if (state.paymentMethod) {
+            proceedPaymentBtn.disabled = false;
+        }
     }
 
     async function fetchAndRenderTimeSlots() {
@@ -415,9 +407,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     durationSelect.addEventListener('change', updateBookingSummary);
 
+    bookingModalEl.querySelectorAll('.payment-method').forEach(method => {
+        method.addEventListener('click', function() {
+            bookingModalEl.querySelectorAll('.payment-method.selected').forEach(m => m.classList.remove('selected'));
+            this.classList.add('selected');
+            state.paymentMethod = this.dataset.method;
+            updateBookingSummary();
+        });
+    });
+
     proceedPaymentBtn.addEventListener('click', function() {
-        if (!state.time) {
-            alert('Silakan pilih waktu.');
+        if (!state.time || !state.paymentMethod) {
+            alert('Silakan pilih waktu dan metode pembayaran.');
             return;
         }
 
@@ -506,8 +507,8 @@ document.addEventListener('DOMContentLoaded', function() {
             submitReviewBtn.disabled = true;
 
             try {
-                
-                const response = await fetch('review.php', { 
+                // Targetkan 'review.php' yang sekarang di root
+                const response = await fetch('review.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
