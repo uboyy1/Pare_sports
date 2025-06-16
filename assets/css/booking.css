@@ -204,3 +204,34 @@ main.container {
     border-color: var(--primary-color); /* Updated to primary color */
     background-color: #fdf3f2;
 }
+
+/* Di booking.css atau style tag */
+.venue-img {
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+.venue-img:hover {
+    transform: scale(1.03);
+}
+
+.booking-card {
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid #eaeaea;
+}
+
+.booking-card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transform: translateY(-3px);
+}
+
+.status-badge {
+    font-size: 0.75rem;
+    padding: 5px 10px;
+}
+
+.payment-badge {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+}

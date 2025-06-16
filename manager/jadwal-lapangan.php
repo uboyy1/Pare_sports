@@ -99,31 +99,39 @@ $page_title = "Jadwal Lapangan";
                                         <th>Pemesan</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <?php
-                                    for ($h = 7; $h <= 23; $h++) {
-                                        $time_slot = str_pad($h, 2, '0', STR_PAD_LEFT) . ":00:00";
-                                        $booked_info = null;
-                                        foreach ($bookings as $booking) {
-                                            if ($booking['jam_mulai'] == $time_slot) {
-                                                $booked_info = $booking;
-                                                break;
-                                            }
-                                        }
+                                    <tbody>
+                                        <?php
+                                        for ($h = 7; $h <= 23; $h++) {
+                                            $time_slot = str_pad($h, 2, '0', STR_PAD_LEFT) . ":00:00";
+                                            $booked_info = null;
 
-                                        echo "<tr>";
-                                        echo "<td>" . date('H:i', strtotime($time_slot)) . "</td>";
-                                        if ($booked_info) {
-                                            echo '<td class="table-danger">Dipesan</td>';
-                                            echo "<td>" . htmlspecialchars($booked_info['nama_user']) . "</td>";
-                                        } else {
-                                            echo '<td class="table-success">Tersedia</td>';
-                                            echo "<td>-</td>";
+                                            // Loop untuk memeriksa setiap pemesanan
+                                            foreach ($bookings as $booking) {
+                                                // Konversi jam ke integer untuk perbandingan
+                                                $current_hour = (int)substr($time_slot, 0, 2);
+                                                $start_hour = (int)substr($booking['jam_mulai'], 0, 2);
+                                                $end_hour = (int)substr($booking['jam_selesai'], 0, 2);
+
+                                                // Cek apakah jam saat ini berada di dalam rentang pemesanan
+                                                if ($current_hour >= $start_hour && $current_hour < $end_hour) {
+                                                    $booked_info = $booking;
+                                                    break; // Keluar dari loop jika sudah ditemukan jadwal yang sesuai
+                                                }
+                                            }
+
+                                            echo "<tr>";
+                                            echo "<td>" . date('H:i', strtotime($time_slot)) . "</td>";
+                                            if ($booked_info) {
+                                                echo '<td class="table-danger">Dipesan</td>';
+                                                echo "<td>" . htmlspecialchars($booked_info['nama_user']) . "</td>";
+                                            } else {
+                                                echo '<td class="table-success">Tersedia</td>';
+                                                echo "<td>-</td>";
+                                            }
+                                            echo "</tr>";
                                         }
-                                        echo "</tr>";
-                                    }
-                                    ?>
-                                </tbody>
+                                        ?>
+                                    </tbody>
                             </table>
                         </div>
                     </div>

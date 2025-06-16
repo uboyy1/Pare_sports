@@ -60,7 +60,6 @@ function getLapangan($conn, $sport_filter, $search_query, $per_page, $offset) {
     }
 }
 
-
 function countLapangan($conn, $sport_filter, $search_query) {
     $sql = "SELECT COUNT(*) as total FROM lapangan WHERE 1=1";
     $params = [];
@@ -102,11 +101,11 @@ function getBookingsByUserId($conn, $user_id) {
                 b.status,
                 b.payment_method,
                 l.nama_venue, 
-                l.nama_lapangan,
                 l.gambar AS venue_gambar
             FROM booking b
             JOIN lapangan l ON b.lapangan_id = l.id
             WHERE b.user_id = :user_id
+            AND b.status IN ('pending', 'confirmed', 'completed')
             ORDER BY b.tanggal DESC, b.jam_mulai DESC";
     
     try {
@@ -117,6 +116,23 @@ function getBookingsByUserId($conn, $user_id) {
     } catch (PDOException $e) {
         error_log("Database Error in getBookingsByUserId: " . $e->getMessage());
         return [];
+    }
+}
+
+function deleteBooking($conn, $booking_id) {
+    try {
+        $conn->beginTransaction();
+        
+        // Delete the booking
+        $stmt = $conn->prepare("DELETE FROM booking WHERE id = ?");
+        $stmt->execute([$booking_id]);
+        
+        $conn->commit();
+        return $stmt->rowCount() > 0;
+    } catch (PDOException $e) {
+        $conn->rollBack();
+        error_log("Database Error in deleteBooking: " . $e->getMessage());
+        return false;
     }
 }
 
@@ -154,6 +170,52 @@ function updateUserBalance($conn, $user_id, $amount, $type, $description) {
         error_log("Error updating balance: " . $e->getMessage());
         return false;
     }
+    function updateBookingStatus($conn, $booking_id, $new_status) {
+    try {
+        $conn->beginTransaction();
+        
+        // Dapatkan detail booking
+        $stmt = $conn->prepare("SELECT * FROM booking WHERE id = :id");
+        $stmt->bindParam(':id', $booking_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $booking = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$booking) {
+            return false;
+        }
+        
+        // Update status booking
+        $stmt = $conn->prepare("UPDATE booking SET status = :status WHERE id = :id");
+        $stmt->bindParam(':status', $new_status);
+        $stmt->bindParam(':id', $booking_id, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        // Jika booking dibatalkan dan pembayaran menggunakan saldo, kembalikan saldo
+        if ($new_status === 'cancelled' && $booking['payment_method'] === 'saldo') {
+            $refundAmount = $booking['total_harga'];
+            $stmt = $conn->prepare("UPDATE user_balances SET balance = balance + :amount WHERE user_id = :user_id");
+            $stmt->bindParam(':amount', $refundAmount);
+            $stmt->bindParam(':user_id', $booking['user_id'], PDO::PARAM_INT);
+            $stmt->execute();
+            
+            // Catat transaksi refund
+            $stmt = $conn->prepare("INSERT INTO transactions (user_id, amount, type, description) VALUES (:user_id, :amount, 'refund', :description)");
+            $description = 'Refund for cancelled booking #' . $booking_id;
+            $stmt->execute([
+                'user_id' => $booking['user_id'],
+                'amount' => $refundAmount,
+                'description' => $description
+            ]);
+        }
+        
+        $conn->commit();
+        return true;
+    } catch (PDOException $e) {
+        $conn->rollBack();
+        error_log("Database Error in updateBookingStatus: " . $e->getMessage());
+        return false;
+    }
+}
 }
 /**
  * Menghitung jumlah lapangan yang dikelola oleh seorang manajer.
@@ -294,7 +356,7 @@ function getRecentBookingsForManager($conn, $manager_id, $limit = 5) {
  * @return array Daftar booking.
  */
 function getBookingsForFieldOnDate($conn, $lapangan_id, $date) {
-    $sql = "SELECT b.jam_mulai, u.nama AS nama_user
+    $sql = "SELECT b.jam_mulai, b.jam_selesai, u.nama AS nama_user
             FROM booking b
             JOIN users u ON b.user_id = u.id
             WHERE b.lapangan_id = :lapangan_id 

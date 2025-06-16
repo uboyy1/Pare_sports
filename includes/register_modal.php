@@ -18,7 +18,7 @@
           <div class="mb-3">
             <label for="registerUsername" class="form-label">Username</label>
             <input type="text" class="form-control" id="registerUsername" name="username" 
-                   placeholder="Buat username unik" required minlength="3">
+                   placeholder="Masukkan username" required minlength="3">
             <small class="text-muted">Minimal 3 karakter. Hanya huruf, angka, dan underscore (_)</small>
           </div>
           

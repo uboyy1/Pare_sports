@@ -3,10 +3,9 @@ session_start();
 require_once '../config/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Ambil data dari form
-    $nama = trim($_POST['nama']);
-    $username = trim($_POST['username']);
-    $email = trim($_POST['email']);
+    $nama = $_POST['nama'];
+    $username = $_POST['username'];
+    $email = $_POST['email'];
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
     
@@ -31,14 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit();
     }
     
-    // Validasi format username
-    if (!preg_match('/^[a-zA-Z0-9_]+$/', $username)) {
-        $_SESSION['register_error'] = "Username hanya boleh mengandung huruf, angka, dan underscore (_).";
-        header('Location: ../index.php');
-        exit();
-    }
-    
-    // Hash password
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
     
     // Cek duplikat email
@@ -77,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->bindParam(':password', $hashed_password);
         
         if ($stmt->execute()) {
-            $_SESSION['register_success'] = "Pendaftaran berhasil! Silakan login.";
+            $_SESSION['register_success'] ;
         } else {
             $errorInfo = $stmt->errorInfo();
             $_SESSION['register_error'] = "Pendaftaran gagal: " . $errorInfo[2];
