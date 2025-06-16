@@ -122,13 +122,29 @@ $page_title = "Jadwal Lapangan";
                                             echo "<tr>";
                                             echo "<td>" . date('H:i', strtotime($time_slot)) . "</td>";
                                             if ($booked_info) {
+                                                // Cek apakah ini booking online atau offline
+                                                $customer_name = !empty($booked_info['offline_customer_name']) 
+                                                                ? htmlspecialchars($booked_info['offline_customer_name']) . ' (Offline)' 
+                                                                : htmlspecialchars($booked_info['nama_user']);
+
                                                 echo '<td class="table-danger">Dipesan</td>';
-                                                echo "<td>" . htmlspecialchars($booked_info['nama_user']) . "</td>";
+                                                echo "<td>" . $customer_name . "</td>";
                                             } else {
+                                                // Tampilkan form untuk booking manual jika slot tersedia
                                                 echo '<td class="table-success">Tersedia</td>';
-                                                echo "<td>-</td>";
+                                                echo '<td>
+                                                        <form action="../proses/proses_manual_booking.php" method="POST" class="d-flex gap-2">
+                                                            <input type="hidden" name="lapangan_id" value="' . $selected_lapangan_id . '">
+                                                            <input type="hidden" name="tanggal" value="' . $selected_date . '">
+                                                            <input type="hidden" name="jam_mulai" value="' . date('H:i', strtotime($time_slot)) . '">
+                                                            
+                                                            <input type="text" name="customer_name" class="form-control form-control-sm" placeholder="Nama Pelanggan" required>
+                                                            <button type="submit" class="btn btn-sm btn-primary" title="Simpan Booking Manual">
+                                                                <i class="fas fa-save"></i>
+                                                            </button>
+                                                        </form>
+                                                    </td>';
                                             }
-                                            echo "</tr>";
                                         }
                                         ?>
                                     </tbody>
