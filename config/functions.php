@@ -289,11 +289,13 @@ function getFinancialReportForManager($conn, $manager_id, $start_date, $end_date
         'total_bersih' => 0
     ];
     
+    // Kueri FINAL: Mengabaikan booking jika offline_customer_name tidak kosong (IS NULL)
     $sql = "SELECT b.id, b.tanggal, b.total_harga, l.nama_venue
             FROM booking b
             JOIN lapangan l ON b.lapangan_id = l.id
             WHERE l.pengelola_id = :manager_id
-            AND b.status IN ('confirmed', 'selesai')
+            AND b.status IN ('confirmed', 'completed', 'selesai') 
+            AND b.offline_customer_name IS NULL  
             AND b.tanggal BETWEEN :start_date AND :end_date";
             
     try {
@@ -305,7 +307,8 @@ function getFinancialReportForManager($conn, $manager_id, $start_date, $end_date
         
         $transactions = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $total_kotor = array_sum(array_column($transactions, 'total_harga'));
-        $total_potongan = $total_kotor * 0.10; // Asumsi potongan admin 10%
+        
+        $total_potongan = $total_kotor * 0.03; 
         $total_bersih = $total_kotor - $total_potongan;
 
         $report['transactions'] = $transactions;
@@ -356,9 +359,10 @@ function getRecentBookingsForManager($conn, $manager_id, $limit = 5) {
  * @return array Daftar booking.
  */
 function getBookingsForFieldOnDate($conn, $lapangan_id, $date) {
-    $sql = "SELECT b.jam_mulai, b.jam_selesai, u.nama AS nama_user
+    // LEFT JOIN digunakan agar booking manual (yang mungkin user_id-nya tidak ada di tabel users) tetap muncul
+    $sql = "SELECT b.jam_mulai, b.jam_selesai, u.nama AS nama_user, b.offline_customer_name
             FROM booking b
-            JOIN users u ON b.user_id = u.id
+            LEFT JOIN users u ON b.user_id = u.id
             WHERE b.lapangan_id = :lapangan_id 
             AND b.tanggal = :tanggal 
             AND b.status != 'cancelled'";
