@@ -455,7 +455,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment_method'])) {
       .card-body {
         padding: 20px 15px;
       }
-    }s
+    }
   </style>
 </head>
 <body>

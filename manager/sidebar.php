@@ -2,7 +2,7 @@
 <div class="bg-dark border-right" id="sidebar-wrapper">
     <div class="sidebar-heading text-white">
         <a href="../index.php" class="text-white text-decoration-none">
-            <img src="../assets/img/Logo pare sports.png" alt="Logo" height="30" class="me-2">PARESPORTS
+            <img src="../assets/img/Logo pare sports.png" alt="Logo" height="35" class="me-2">
         </a>
     </div>
     <div class="list-group list-group-flush">

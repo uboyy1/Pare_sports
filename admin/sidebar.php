@@ -6,11 +6,14 @@
         </a>
     </div>
     <div class="list-group list-group-flush">
-        <a href="dashboard_admin.php" class="list-group-item list-group-item-action <?= $currentPage == 'dashboard-admin.php' ? 'active' : '' ?>">
+        <a href="dashboard_admin.php" class="list-group-item list-group-item-action <?= $currentPage == 'dashboard_admin.php' ? 'active' : '' ?>">
             <i class="fas fa-tachometer-alt me-2"></i>Dashboard
         </a>
         <a href="verifikasi-data.php" class="list-group-item list-group-item-action <?= $currentPage == 'verifikasi-data.php' ? 'active' : '' ?>">
-            <i class="fas fa-user-check me-2"></i>Verifikasi Data
+            <i class="fas fa-user-check me-2"></i>Verifikasi Akun
+        </a>
+        <a href="data_akun.php" class="list-group-item list-group-item-action <?= $currentPage == 'data_akun.php' ? 'active' : '' ?>">
+            <i class="fas fa-users me-2"></i>Data Akun
         </a>
         <a href="laporan-keuangan.php" class="list-group-item list-group-item-action <?= $currentPage == 'laporan-keuangan.php' ? 'active' : '' ?>">
             <i class="fas fa-chart-line me-2"></i>Laporan Keuangan

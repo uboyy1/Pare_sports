@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     exit();
 }
 
-$page_title = "Verifikasi Akun & Data";
+$page_title = "Verifikasi Akun Pengguna";
 
 // --- Handle Aksi Verifikasi/Tolak ---
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
@@ -62,20 +62,6 @@ $pending_managers = getManagersbyStatus($conn, 'pending');
             <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
                 <div class="container-fluid">
                     <span class="navbar-brand mb-0 h1"><?= $page_title ?></span>
-                    <div class="collapse navbar-collapse">
-                        <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-user me-2"></i><?= htmlspecialchars($_SESSION['username']) ?>
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" href="../profil.php">Profil</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="../logout.php">Logout</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
                 </div>
             </nav>
 
@@ -95,7 +81,7 @@ $pending_managers = getManagersbyStatus($conn, 'pending');
 
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5>Verifikasi Pengguna</h5>
+                        <h5>Verifikasi Akun Pelanggan</h5>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -142,7 +128,7 @@ $pending_managers = getManagersbyStatus($conn, 'pending');
 
                 <div class="card">
                     <div class="card-header">
-                        <h5>Verifikasi Pengelola</h5>
+                        <h5>Verifikasi Akun Pengelola Lapangan</h5>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">

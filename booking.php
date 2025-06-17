@@ -120,7 +120,7 @@ if ($isLoggedIn && $userId !== null && $userId > 0) {
 
                     <h3>Alamat</h3>
                     <?php if (!empty($lapangan['maps_link'])): ?>
-                        <p><a href="<?= htmlspecialchars($lapapan['maps_link']) ?>" target="_blank" rel="noopener noreferrer"><?= htmlspecialchars($lapangan['alamat'] ?? 'Alamat tidak tersedia.') ?> <i class="fas fa-external-link-alt fa-xs"></i></a></p>
+                        <p><a href="<?= htmlspecialchars($lapangan['maps_link']) ?>" target="_blank" rel="noopener noreferrer"><?= htmlspecialchars($lapangan['alamat'] ?? 'Alamat tidak tersedia.') ?> <i class="fas fa-external-link-alt fa-xs"></i></a></p>
                     <?php else: ?>
                         <p><?= htmlspecialchars($lapangan['alamat'] ?? 'Alamat tidak tersedia.') ?></p>
                     <?php endif; ?>
@@ -261,19 +261,13 @@ if ($isLoggedIn && $userId !== null && $userId > 0) {
                             <p><strong>Durasi:</strong> <span id="summaryDuration">-</span></p>
                             <hr>
                             <p class="fs-5"><strong>Total:</strong> <span id="summaryTotal" class="fw-bold">Rp 0</span></p>
-                            <div class="payment-methods mt-3">
-                                <h5>Metode Pembayaran</h5>
-                                <div class="payment-method" data-method="qris">
-                                    <span>QRIS</span>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-danger" id="proceedPaymentBtn" disabled>Lanjutkan Pembayaran</button>
+                <button type="button" class="btn btn-danger" id="proceedPaymentBtn">Lanjutkan Pembayaran</button>
             </div>
         </div>
     </div>
@@ -306,7 +300,6 @@ document.addEventListener('DOMContentLoaded', function() {
         fieldName: null,
         fieldPrice: 0,
         time: null,
-        paymentMethod: null,
         date: null,
     };
 
@@ -320,10 +313,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function resetBookingState() {
-        state = { fieldId: null, fieldName: null, fieldPrice: 0, time: null, paymentMethod: null, date: null };
+        state = { fieldId: null, fieldName: null, fieldPrice: 0, time: null, date: null };
         bookingModalEl.querySelectorAll('.time-slot.selected').forEach(s => s.classList.remove('selected'));
-        bookingModalEl.querySelectorAll('.payment-method.selected').forEach(m => m.classList.remove('selected'));
-        proceedPaymentBtn.disabled = true;
+        proceedPaymentBtn.disabled = false;
     }
 
     function updateBookingSummary() {
@@ -337,10 +329,6 @@ document.addEventListener('DOMContentLoaded', function() {
         bookingModalEl.querySelector('#summaryTime').textContent = `${state.time} - ${endTime}`;
         bookingModalEl.querySelector('#summaryDuration').textContent = `${duration} Jam`;
         bookingModalEl.querySelector('#summaryTotal').textContent = formatToRupiah(totalPrice);
-
-        if (state.paymentMethod) {
-            proceedPaymentBtn.disabled = false;
-        }
     }
 
     async function fetchAndRenderTimeSlots() {
@@ -407,18 +395,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     durationSelect.addEventListener('change', updateBookingSummary);
 
-    bookingModalEl.querySelectorAll('.payment-method').forEach(method => {
-        method.addEventListener('click', function() {
-            bookingModalEl.querySelectorAll('.payment-method.selected').forEach(m => m.classList.remove('selected'));
-            this.classList.add('selected');
-            state.paymentMethod = this.dataset.method;
-            updateBookingSummary();
-        });
-    });
-
     proceedPaymentBtn.addEventListener('click', function() {
-        if (!state.time || !state.paymentMethod) {
-            alert('Silakan pilih waktu dan metode pembayaran.');
+        if (!state.time) {
+            alert('Silakan pilih waktu terlebih dahulu.');
             return;
         }
 

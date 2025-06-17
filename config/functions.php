@@ -514,3 +514,99 @@ function getSystemFinancialReport($conn, $start_date, $end_date) {
         return $report;
     }
 }
+
+// ... (fungsi yang sudah ada sebelumnya)
+
+// Tambahkan fungsi baru di bagian bawah:
+
+/**
+ * Mengambil semua pengguna (role 'user')
+ * @param PDO $conn Koneksi database
+ * @return array Daftar pengguna
+ */
+function getAllUsers($conn) {
+    try {
+        $stmt = $conn->prepare("SELECT * FROM users WHERE role = 'user' ORDER BY created_at DESC");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Database Error in getAllUsers: " . $e->getMessage());
+        return [];
+    }
+}
+
+/**
+ * Mengambil semua pengelola (role 'pengelola')
+ * @param PDO $conn Koneksi database
+ * @return array Daftar pengelola
+ */
+function getAllManagers($conn) {
+    try {
+        $stmt = $conn->prepare("SELECT * FROM users WHERE role = 'pengelola' ORDER BY created_at DESC");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Database Error in getAllManagers: " . $e->getMessage());
+        return [];
+    }
+}
+
+/**
+ * Menghapus akun pengguna beserta semua data terkait
+ * @param PDO $conn Koneksi database
+ * @param int $user_id ID pengguna yang akan dihapus
+ * @return bool True jika berhasil, false jika gagal
+ */
+function deleteUserAccount($conn, $user_id) {
+    try {
+        $conn->beginTransaction();
+        
+        // Dapatkan role user untuk penanganan khusus
+        $stmt = $conn->prepare("SELECT role FROM users WHERE id = :id");
+        $stmt->bindParam(':id', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        $role = $user['role'] ?? null;
+        
+        // Jika pengelola, hapus semua lapangan terkait
+        if ($role === 'pengelola') {
+            // Hapus booking di lapangan pengelola
+            $stmt = $conn->prepare("DELETE booking FROM booking 
+                                    JOIN lapangan ON booking.lapangan_id = lapangan.id 
+                                    WHERE lapangan.pengelola_id = :user_id");
+            $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            // Hapus lapangan
+            $stmt = $conn->prepare("DELETE FROM lapangan WHERE pengelola_id = :user_id");
+            $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+            $stmt->execute();
+        }
+        
+        // Hapus booking user
+        $stmt = $conn->prepare("DELETE FROM booking WHERE user_id = :user_id");
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        // Hapus transaksi dan saldo
+        $stmt = $conn->prepare("DELETE FROM transactions WHERE user_id = :user_id");
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        $stmt = $conn->prepare("DELETE FROM user_balances WHERE user_id = :user_id");
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        // Hapus user
+        $stmt = $conn->prepare("DELETE FROM users WHERE id = :user_id");
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        $conn->commit();
+        return true;
+    } catch (PDOException $e) {
+        $conn->rollBack();
+        error_log("Database Error in deleteUserAccount: " . $e->getMessage());
+        return false;
+    }
+}

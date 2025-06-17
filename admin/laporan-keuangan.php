@@ -13,23 +13,11 @@ define('PLATFORM_FEE_PERCENTAGE', 0.03); // Asumsi potongan platform 3%
 $start_date = $_GET['start_date'] ?? date('Y-m-01');
 $end_date = $_GET['end_date'] ?? date('Y-m-t');
 
-
 $start_date = $_GET['start_date'] ?? date('Y-m-01');
 $end_date = $_GET['end_date'] ?? date('Y-m-t');
 
 // Panggil fungsi yang telah diimplementasikan
 $report = getSystemFinancialReport($conn, $start_date, $end_date);
-// ...
-
-// Example of how getSystemFinancialReport might work (needs to be in functions.php)
-// $sql = "SELECT b.id, b.tanggal, b.total_harga, l.nama_venue, u.nama as nama_user
-//         FROM booking b
-//         JOIN lapangan l ON b.lapangan_id = l.id
-//         JOIN users u ON b.user_id = u.id
-//         WHERE b.status IN ('confirmed', 'selesai')
-//         AND b.tanggal BETWEEN :start_date AND :end_date";
-// ... (rest of the logic for calculating totals)
-
 
 $page_title = "Laporan Keuangan Sistem";
 ?>
@@ -50,20 +38,6 @@ $page_title = "Laporan Keuangan Sistem";
              <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
                 <div class="container-fluid">
                     <span class="navbar-brand mb-0 h1"><?= $page_title ?></span>
-                    <div class="collapse navbar-collapse">
-                        <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-user me-2"></i><?= htmlspecialchars($_SESSION['username']) ?>
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" href="../profil.php">Profil</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="../logout.php">Logout</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
                 </div>
             </nav>
             <main class="container-fluid p-4">
@@ -145,7 +119,8 @@ $page_title = "Laporan Keuangan Sistem";
                                                 <td><?= htmlspecialchars($trx['id']) ?></td>
                                                 <td><?= date('d M Y', strtotime($trx['tanggal'])) ?></td>
                                                 <td><?= htmlspecialchars($trx['nama_venue']) ?></td>
-                                                <td><?= htmlspecialchars($trx['nama_pengelola']) ?></td> <td>Rp <?= number_format($trx['total_harga'], 0, ',', '.') ?></td>
+                                                <td><?= htmlspecialchars($trx['nama_pengelola']) ?></td> 
+                                                <td>Rp <?= number_format($trx['total_harga'], 0, ',', '.') ?></td>
                                                 <td class="text-info">Rp <?= number_format($platform_fee, 0, ',', '.') ?></td>
                                                 <td class="text-success fw-bold">Rp <?= number_format($manager_revenue, 0, ',', '.') ?></td>
                                             </tr>

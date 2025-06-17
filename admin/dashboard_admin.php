@@ -5,7 +5,7 @@ require_once '../config/functions.php';
 
 // Pastikan hanya admin yang bisa mengakses
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header('Location: ../index.php');
+    header('Location: ../dashboard_admin.php');
     exit();
 }
 
@@ -33,20 +33,6 @@ $total_bookings_system_wide = countTotalBookings($conn);
             <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
                 <div class="container-fluid">
                     <span class="navbar-brand mb-0 h1"><?= $page_title ?></span>
-                    <div class="collapse navbar-collapse">
-                        <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-user me-2"></i><?= htmlspecialchars($_SESSION['username']) ?>
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" href="../profil.php">Profil</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="../logout.php">Logout</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
                 </div>
             </nav>
 
@@ -93,17 +79,32 @@ $total_bookings_system_wide = countTotalBookings($conn);
                     </div>
                 </div>
 
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5>Verifikasi Akun & Data</h5>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5>Verifikasi Akun & Data</h5>
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <p>Kelola verifikasi akun pengguna dan pengelola di sini.</p>
+                                <a href="verifikasi-data.php" class="btn btn-outline-primary mt-auto">Menuju Halaman Verifikasi</a>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <p>Kelola verifikasi akun pengguna dan pengelola di sini.</p>
-                        <a href="verifikasi-data.php" class="btn btn-outline-primary">Menuju Halaman Verifikasi</a>
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5>Manajemen Akun</h5>
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <p>Kelola semua akun pengguna dan pengelola di sini.</p>
+                                <a href="data_akun.php" class="btn btn-outline-success mt-auto">Menuju Data Akun</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card mt-4">
                     <div class="card-header">
                         <h5>Laporan Keuangan Global</h5>
                     </div>
