@@ -1,9 +1,7 @@
 <?php $currentPage = basename($_SERVER['SCRIPT_NAME']); ?>
 <div class="bg-dark border-right" id="sidebar-wrapper">
     <div class="sidebar-heading text-white">
-        <a href="../index.php" class="text-white text-decoration-none">
-            <img src="../assets/img/Logo pare sports.png" alt="Logo" height="30" class="me-2">PARESPORTS
-        </a>
+            <img src="../assets/img/Logo pare sports.png" alt="Logo" height="50" class="me-2">
     </div>
     <div class="list-group list-group-flush">
         <a href="dashboard_admin.php" class="list-group-item list-group-item-action <?= $currentPage == 'dashboard_admin.php' ? 'active' : '' ?>">

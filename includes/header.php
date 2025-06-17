@@ -97,7 +97,7 @@ $is_dashboard_page = (
                 <li>
                     <a class="dropdown-item" href="<?= 
                         ($user_role == 'admin') ? 'admin/dashboard-admin.php' : 
-                        (($user_role == 'pengelola') ? 'pengelola/dashboard-pengelola.php' : 'index.php')
+                        (($user_role == 'pengelola') ? 'manager/dashboard-pengelola.php' : 'index.php')
                     ?>">
                         <i class="fas fa-tachometer-alt me-2"></i>Dashboard
                     </a>
