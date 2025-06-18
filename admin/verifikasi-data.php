@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     exit();
 }
 
-$page_title = "Verifikasi Akun Pengguna";
+$page_title = "Verifikasi Akun Pengelola";
 
 // --- Handle Aksi Verifikasi/Tolak ---
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
@@ -30,8 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
     exit();
 }
 
-// --- Ambil data pengguna dan pengelola yang perlu diverifikasi ---
-$pending_users = getUsersbyStatus($conn, 'pending');
+// --- Ambil data pengelola yang perlu diverifikasi ---
 $pending_managers = getManagersbyStatus($conn, 'pending');
 
 ?>
@@ -78,53 +77,6 @@ $pending_managers = getManagersbyStatus($conn, 'pending');
                     unset($_SESSION['error_message']);
                 }
                 ?>
-
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5>Verifikasi Akun Pelanggan</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Nama</th>
-                                        <th>Username</th>
-                                        <th>Email</th>
-                                        <th>Status</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php if (empty($pending_users)): ?>
-                                        <tr><td colspan="6" class="text-center">Tidak ada pengguna yang perlu diverifikasi.</td></tr>
-                                    <?php else: ?>
-                                        <?php foreach($pending_users as $user): ?>
-                                        <tr>
-                                            <td><?= htmlspecialchars($user['id']) ?></td>
-                                            <td><?= htmlspecialchars($user['nama']) ?></td>
-                                            <td><?= htmlspecialchars($user['username']) ?></td>
-                                            <td><?= htmlspecialchars($user['email']) ?></td>
-                                            <td><span class="badge bg-warning"><?= htmlspecialchars(ucfirst($user['status'])) ?></span></td>
-                                            <td class="table-action-buttons">
-                                                <form method="POST">
-                                                    <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
-                                                    <button type="submit" name="action" value="verify" class="btn btn-success btn-sm"><i class="fas fa-check"></i> Verifikasi</button>
-                                                </form>
-                                                <form method="POST">
-                                                    <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
-                                                    <button type="submit" name="action" value="reject" class="btn btn-danger btn-sm"><i class="fas fa-times"></i> Tolak</button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="card">
                     <div class="card-header">

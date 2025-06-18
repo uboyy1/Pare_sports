@@ -56,9 +56,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit();
     }
     
+    // Tentukan role dan status
+    $role = 'user'; // Default role user
+    $status = 'verified'; // Langsung aktif untuk pelanggan
+
     // Insert user baru
     $query = "INSERT INTO users (nama, username, email, password, role, status) 
-              VALUES (:nama, :username, :email, :password, 'user', 'pending')";
+              VALUES (:nama, :username, :email, :password, :role, :status)";
     
     try {
         $stmt = $conn->prepare($query);
@@ -66,9 +70,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->bindParam(':username', $username);
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':password', $hashed_password);
+        $stmt->bindParam(':role', $role);
+        $stmt->bindParam(':status', $status);
         
         if ($stmt->execute()) {
-            $_SESSION['register_success'] ;
+            $_SESSION['register_success'] = "Pendaftaran berhasil! Silakan login.";
         } else {
             $errorInfo = $stmt->errorInfo();
             $_SESSION['register_error'] = "Pendaftaran gagal: " . $errorInfo[2];
