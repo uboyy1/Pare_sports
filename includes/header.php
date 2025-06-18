@@ -15,6 +15,9 @@ $is_dashboard_page = (
     $currentPage === 'dashboard-pengelola.php' || 
     ($currentPage === 'index.php' && $user_role === 'user')
 );
+
+// Check if we should hide auth buttons
+$hide_auth_buttons = isset($hide_auth_buttons) && $hide_auth_buttons;
 ?>
 
 <style>
@@ -138,10 +141,12 @@ $is_dashboard_page = (
         <?php endif; ?>
         
         <?php else: ?>
-        <div class="auth-buttons" id="authButtons">
-          <a href="#" class="btn btn-outline-secondary me-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#registerModal">Register</a>
-          <a href="#" class="btn btn-danger shadow-sm" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
-        </div>
+          <?php if (!$hide_auth_buttons): ?>
+            <div class="auth-buttons" id="authButtons">
+              <a href="#" class="btn btn-outline-secondary me-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#registerModal">Register</a>
+              <a href="#" class="btn btn-danger shadow-sm" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
+            </div>
+          <?php endif; ?>
         <?php endif; ?>
       </div>
     </div>

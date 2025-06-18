@@ -43,7 +43,7 @@ if ($stmt_reviews) {
 
 
 // --- Bagian Review: Logic untuk Cek Kelayakan User untuk Memberikan Review ---
-// PERUBAHAN UTAMA DI SINI: SANGAT DISIMPLIFIKASI
+// PERUBAHAN UTAMA DI INI: SANGAT DISIMPLIFIKASI
 $canUserReview = false;
 $hasReviewed = false; // Tetap perlu cek apakah user sudah review
 
@@ -199,7 +199,7 @@ if ($isLoggedIn && $userId !== null && $userId > 0) {
                     <div class="card review-item mb-3">
                         <div class="card-body">
                             <div class="d-flex align-items-center mb-2">
-                                <img src="assets/img/profile/<?= htmlspecialchars($review['profile_picture'] ?? 'default.png') ?>" alt="Profile Picture" class="rounded-circle me-3" width="50" height="50">
+                                <img src="assets/img/profiles/<?= htmlspecialchars($review['profile_picture'] ?? 'default.png') ?>" alt="Profile Picture" class="rounded-circle me-3" width="50" height="50">
                                 <div>
                                     <h5 class="mb-0"><?= htmlspecialchars($review['nama']) ?></h5>
                                     <small class="text-muted"><?= date('d M Y', strtotime($review['created_at'])) ?></small>

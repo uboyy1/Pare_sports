@@ -156,26 +156,17 @@ $username = $_SESSION['username'];
                     <form action="proses/proses_ganti_password.php" method="POST" id="password-form">
                         <div class="mb-4">
                             <label class="form-label">Masukkan Kata Sandi Lama</label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="current_password" required>
-                                </button>
-                            </div>
+                            <input type="text" class="form-control" name="current_password" id="current_password" required>
                         </div>
                         
                         <div class="mb-4">
                             <label class="form-label">Kata Sandi Baru</label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="new_password" id="new_password" required>
-                                </button>
-                            </div>
+                            <input type="text" class="form-control" name="new_password" id="new_password" required>
                         </div>
                         
                         <div class="mb-4">
                             <label class="form-label">Ketik Ulang Kata Sandi Baru</label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="confirm_password" id="confirm_password" required>
-                                </button>
-                            </div>
+                            <input type="text" class="form-control" name="confirm_password" id="confirm_password" required>
                             <div class="password-feedback" id="password-feedback" style="display: none;"></div>
                         </div>
                         

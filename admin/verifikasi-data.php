@@ -1,7 +1,6 @@
 <?php
 session_start();
 require_once '../config/database.php';
-require_once '../config/functions.php';
 
 // Pastikan hanya admin yang bisa mengakses
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
@@ -18,7 +17,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
 
     if ($user_id > 0) {
         $new_status = ($action == 'verify') ? 'verified' : 'rejected';
-        if (updateVerificationStatus($conn, $user_id, $new_status)) {
+        
+        // Update status verifikasi langsung di database
+        $sql = "UPDATE users SET status = :status WHERE id = :id";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':status', $new_status);
+        $stmt->bindParam(':id', $user_id);
+        
+        if ($stmt->execute()) {
             $_SESSION['success_message'] = "Status akun berhasil diperbarui.";
         } else {
             $_SESSION['error_message'] = "Gagal memperbarui status akun.";
@@ -31,7 +37,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
 }
 
 // --- Ambil data pengelola yang perlu diverifikasi ---
-$pending_managers = getManagersbyStatus($conn, 'pending');
+$status = 'pending';
+$stmt = $conn->prepare("SELECT * FROM users WHERE role = 'pengelola' AND status = :status");
+$stmt->bindParam(':status', $status);
+$stmt->execute();
+$pending_managers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 <!DOCTYPE html>
