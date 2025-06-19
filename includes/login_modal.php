@@ -52,13 +52,8 @@
           </div>
         </form>
 
-        <div class="divider">ATAU</div>
-
-        <div class="text-center">
-          <p class="mb-3">Belum punya akun? <a href="#" class="text-danger" data-bs-toggle="modal" data-bs-target="#registerModal" data-bs-dismiss="modal">Daftar sekarang</a></p>
-          <button class="btn btn-outline-danger w-100 mb-2">
-            <i class="fab fa-google me-2"></i>Masuk dengan Google
-          </button>
+        <div class="text-center mt-3">
+          <p class="mb-0">Belum punya akun? <a href="#" class="text-danger" data-bs-toggle="modal" data-bs-target="#registerModal" data-bs-dismiss="modal">Daftar sekarang</a></p>
         </div>
       </div>
     </div>

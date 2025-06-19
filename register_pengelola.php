@@ -58,10 +58,13 @@ $hide_auth_buttons = true;
                 <button type="submit" class="btn btn-register w-100 mt-3">Daftar</button>
             </form>
             <div class="text-center mt-4">
-                <p class="text-muted">Sudah punya akun? <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login di sini</a></p>
+                <p class="text-muted">Sudah punya akun? <a href="index.php">Login di sini</a></p>
             </div>
         </div>
     </main>
+
+    <!-- Sertakan modal login -->
+    <?php include 'includes/login_modal.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     
@@ -90,6 +93,17 @@ $hide_auth_buttons = true;
         
         return true;
     }
+
+    // Fungsi untuk menampilkan modal login
+    document.getElementById('loginLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // Buat modal login
+        var loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+        
+        // Tampilkan modal
+        loginModal.show();
+    });
     </script>
 </body>
 </html>
